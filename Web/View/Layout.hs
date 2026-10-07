@@ -20,7 +20,18 @@ defaultLayout inner = [hsx|
         <title>{pageTitleOrDefault "App"}</title>
     </head>
     <body>
-        <div class="container mt-4">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4 shadow-sm">
+            <div class="container">
+                <a class="navbar-brand fw-bold text-white" href="/">🎓 SGA-Func</a>
+                <div class="navbar-nav ms-auto">
+                    <a class="nav-link" href="/">Início</a>
+                    <a class="nav-link" href="/Relatorios/Ranking">Ranking Geral</a>
+                    <a class="nav-link" href="/Relatorios/Desempenho?turmaId=d1111111-1111-1111-1111-111111111111">Desempenho</a>
+                    <a class="nav-link" href="/Relatorios/Frequencia?turmaId=d1111111-1111-1111-1111-111111111111">Frequência</a>
+                </div>
+            </div>
+        </nav>
+        <div class="container">
             {renderFlashMessages}
             {inner}
         </div>

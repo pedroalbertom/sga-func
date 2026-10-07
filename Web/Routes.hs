@@ -3,8 +3,8 @@ import IHP.RouterPrelude
 import Generated.Types
 import Web.Types
 
--- The welcome page at '/' is served by the static controller below.
--- Additional [routes|...|] blocks get appended by `new-controller`.
+instance AutoRoute RelatoriosController
+
 [routes|StaticController
 GET /    WelcomeAction
 |]
