@@ -2,12 +2,8 @@ module Main where
 
 import Test.Hspec
 import IHP.Prelude
-
--- Import your test specs here:
--- import Test.MySpec
+import qualified Test.AcademicSpec as AcademicSpec
 
 main :: IO ()
 main = hspec do
-    describe "Example" do
-        it "should pass" do
-            1 + 1 `shouldBe` (2 :: Int)
+    AcademicSpec.spec
