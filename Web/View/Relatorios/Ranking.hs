@@ -51,7 +51,7 @@ instance View RankingView where
                 let maybeAluno = Map.lookup alunoId alunoMap
                     nome = maybe "Aluno não encontrado" (get #nome) maybeAluno
                     matricula = maybe "-" (get #matricula) maybeAluno
-                    conceito = Academic.classificarConceito media
+                    conceito = Academic.conceitoAluno media
                     badgePosicao = case pos of
                         1 -> ("badge bg-warning text-dark fs-6" :: Text, "🥇 1º")
                         2 -> ("badge bg-secondary fs-6", "🥈 2º")
@@ -64,9 +64,9 @@ instance View RankingView where
                         </td>
                         <td><code>{matricula}</code></td>
                         <td class="fw-semibold">{nome}</td>
-                        <td class="text-center fw-bold fs-5 text-primary">{Academic.roundDuasCasas media}</td>
+                        <td class="text-center fw-bold fs-5 text-primary">{Academic.arredondar media}</td>
                         <td class="text-center">
-                            <span class="badge bg-secondary">{Academic.formatarConceito conceito}</span>
+                            <span class="badge bg-secondary fs-6">{tshow conceito}</span>
                         </td>
                     </tr>
                 |]

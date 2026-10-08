@@ -17,8 +17,8 @@ instance Controller RelatoriosController where
         alunos <- query @Aluno |> fetch
 
         let alunoMap = Map.fromList (map (\a -> (get #id a, a)) alunos)
-        let notasPares = map (\n -> (get #alunoId n, get #valor n)) notas
-        let mediasCalculadas = Academic.agruparECalcularMedias notasPares
+        -- Chamada da função pura do guia da disciplina
+        let mediasCalculadas = Academic.calcularDesempenho notas
 
         let mediaGeral = case mediasCalculadas of
                 [] -> 0.0
@@ -35,8 +35,8 @@ instance Controller RelatoriosController where
         alunos <- query @Aluno |> fetch
 
         let alunoMap = Map.fromList (map (\a -> (get #id a, a)) alunos)
-        let freqPares = map (\f -> (get #alunoId f, get #presente f)) frequencias
-        let frequenciasCalculadas = Academic.agruparECalcularFrequencias freqPares
+        -- Chamada da função pura do guia da disciplina
+        let frequenciasCalculadas = Academic.calcularFrequencia frequencias
 
         render FrequenciaView { turma, disciplina, frequenciasCalculadas, alunoMap }
 
@@ -45,8 +45,7 @@ instance Controller RelatoriosController where
         alunos <- query @Aluno |> fetch
 
         let alunoMap = Map.fromList (map (\a -> (get #id a, a)) alunos)
-        let notasPares = map (\n -> (get #alunoId n, get #valor n)) notas
-        let mediasCalculadas = Academic.agruparECalcularMedias notasPares
-        let ranking = Academic.ordenarRanking mediasCalculadas
+        -- Chamada da função pura com composição de funções (.)
+        let ranking = Academic.calcularRanking notas
 
         render RankingView { ranking, alunoMap }

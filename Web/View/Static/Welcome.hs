@@ -1,59 +1,67 @@
 module Web.View.Static.Welcome where
 import Web.View.Prelude
+import qualified Data.Map.Strict as Map
 
 data WelcomeView = WelcomeView
+    { turmas :: [Turma]
+    , disciplinaMap :: Map.Map (Id Disciplina) Disciplina
+    }
 
 instance View WelcomeView where
-    html WelcomeView = [hsx|
+    html WelcomeView { .. } = [hsx|
         <div class="p-5 mb-4 bg-light rounded-3 border">
             <div class="container-fluid py-2">
                 <span class="badge bg-primary mb-2">UNIFOR • PROGRAMAÇÃO FUNCIONAL 2026</span>
-                <h1 class="display-5 fw-bold">SGA-Func: Sistema de Gestão Acadêmica</h1>
+                <h1 class="display-5 fw-bold">SGA-Func: Gestão Acadêmica</h1>
                 <p class="col-md-9 fs-5 text-muted">
-                    Demonstração prática dos paradigmas de Programação Funcional com Haskell e IHP Framework.
-                    Os relatórios acadêmicos utilizam funções puras, currying, pattern matching, list comprehensions e agregações com map e foldr.
+                    Aplicação prática dos conceitos de Programação Funcional em Haskell:
+                    funções puras, currying, pattern matching, list comprehensions e agregações com map e foldr.
                 </p>
-                <div class="d-flex gap-2 mt-4">
-                    <a class="btn btn-primary btn-lg" href="/Relatorios/Ranking">
-                        🏆 Ranking Geral
-                    </a>
-                    <a class="btn btn-outline-primary btn-lg" href="/Relatorios/Desempenho?turmaId=d1111111-1111-1111-1111-111111111111">
-                        📊 Desempenho (Turma 2026.1)
-                    </a>
-                    <a class="btn btn-outline-success btn-lg" href="/Relatorios/Frequencia?turmaId=d1111111-1111-1111-1111-111111111111">
-                        📅 Frequência (Turma 2026.1)
+                <div class="mt-4">
+                    <a class="btn btn-primary btn-lg" href={pathTo RankingAction}>
+                        🏆 Ver Ranking Geral de Alunos
                     </a>
                 </div>
             </div>
         </div>
 
-        <div class="row align-items-md-stretch g-4 mb-4">
-            <div class="col-md-4">
-                <div class="h-100 p-4 bg-white rounded-3 border shadow-sm">
-                    <h4>⚙️ Núcleo Funcional Puro</h4>
-                    <p class="text-muted">
-                        Regras de negócio isoladas em <code>Application/Domain/Academic.hs</code> sem efeitos colaterais:
-                        cálculo de média ponderada, closures, e validações.
-                    </p>
-                </div>
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-white">
+                <h4 class="card-title mb-0">Turmas Disponíveis</h4>
             </div>
-            <div class="col-md-4">
-                <div class="h-100 p-4 bg-white rounded-3 border shadow-sm">
-                    <h4>🔄 Map &amp; Foldr na Prática</h4>
-                    <p class="text-muted">
-                        Transformação e redução de dados conforme pág. 5 do guia, agrupando notas e frequências com
-                        <code>foldr</code> e <code>Map.insertWith</code>.
-                    </p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="h-100 p-4 bg-white rounded-3 border shadow-sm">
-                    <h4>🎯 Tipos Algébricos &amp; Pattern Matching</h4>
-                    <p class="text-muted">
-                        Classificação de situações acadêmicas (<code>Aprovado</code>, <code>ProvaFinal</code>, <code>Reprovado</code>)
-                        e conceitos (<code>A</code> até <code>F</code>) com casamento de padrão exaustivo.
-                    </p>
-                </div>
+            <div class="card-body">
+                {if null turmas
+                    then [hsx|<p class="text-muted">Nenhuma turma cadastrada no momento.</p>|]
+                    else [hsx|
+                        <div class="row g-3">
+                            {forEach turmas renderTurma}
+                        </div>
+                    |]
+                }
             </div>
         </div>
     |]
+      where
+        renderTurma turma =
+            let maybeDisc = Map.lookup (get #disciplinaId turma) disciplinaMap
+                nomeDisc = maybe "Disciplina" (get #nome) maybeDisc
+                codDisc = maybe "" (get #codigo) maybeDisc
+            in [hsx|
+                <div class="col-md-6">
+                    <div class="p-3 border rounded-3 bg-white h-100 d-flex flex-column justify-content-between">
+                        <div>
+                            <span class="badge bg-secondary mb-2">{codDisc}</span>
+                            <h5 class="fw-bold mb-1">{nomeDisc}</h5>
+                            <p class="text-muted small mb-3">Semestre: {get #semestre turma}</p>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <a class="btn btn-outline-primary btn-sm" href={pathTo (DesempenhoAction (get #id turma))}>
+                                📊 Ver Desempenho
+                            </a>
+                            <a class="btn btn-outline-success btn-sm" href={pathTo (FrequenciaAction (get #id turma))}>
+                                📅 Ver Frequência
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            |]

@@ -54,11 +54,11 @@ instance View FrequenciaView where
                 let maybeAluno = Map.lookup alunoId alunoMap
                     nome = maybe "Aluno não encontrado" (get #nome) maybeAluno
                     matricula = maybe "-" (get #matricula) maybeAluno
-                    pctFormatado = Academic.roundDuasCasas pct
+                    pctFormatado = Academic.arredondar pct
                     emRisco = pct < 75.0
                     barClass = if emRisco then "bg-danger" else "bg-success"
                     badgeClass = if emRisco then "bg-danger" else "bg-success"
-                    statusTexto = if emRisco then ("Risco de Reprovação (< 75%)" :: Text) else "Frequência Suficiente"
+                    statusTexto = if emRisco then ("Risco de Reprovação (< 75%)" :: Text) else "Frequência Regular"
                     widthStyle = "width: " <> tshow pctFormatado <> "%"
                 in [hsx|
                     <tr>
