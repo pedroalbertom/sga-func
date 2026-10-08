@@ -61,6 +61,7 @@ instance View DesempenhoView where
                     nome = maybe "Aluno não encontrado" (get #nome) maybeAluno
                     matricula = maybe "-" (get #matricula) maybeAluno
                     conceito = Academic.conceitoAluno media
+                    situacaoTexto = Academic.formataSituacao (Academic.situacaoAluno media 100.0)
                     badgeClass = if media >= 7.0 then "bg-success" else if media >= 4.0 then "bg-warning text-dark" else "bg-danger"
                 in [hsx|
                     <tr>
@@ -72,7 +73,7 @@ instance View DesempenhoView where
                         </td>
                         <td class="text-center">
                             <span class={"badge " <> badgeClass}>
-                                {if media >= 7.0 then ("Aprovado por Média" :: Text) else if media >= 4.0 then "Em Prova Final" else "Reprovado por Nota"}
+                                {situacaoTexto}
                             </span>
                         </td>
                     </tr>

@@ -30,18 +30,20 @@ instance View WelcomeView where
                 <h4 class="card-title mb-0">Turmas Disponíveis</h4>
             </div>
             <div class="card-body">
-                {if null turmas
-                    then [hsx|<p class="text-muted">Nenhuma turma cadastrada no momento.</p>|]
-                    else [hsx|
-                        <div class="row g-3">
-                            {forEach turmas renderTurma}
-                        </div>
-                    |]
-                }
+                {renderListaTurmas}
             </div>
         </div>
     |]
       where
+        renderListaTurmas =
+            if null turmas
+                then [hsx|<p class="text-muted">Nenhuma turma cadastrada no momento.</p>|]
+                else [hsx|
+                    <div class="row g-3">
+                        {forEach turmas renderTurma}
+                    </div>
+                |]
+
         renderTurma turma =
             let maybeDisc = Map.lookup (get #disciplinaId turma) disciplinaMap
                 nomeDisc = maybe "Disciplina" (get #nome) maybeDisc

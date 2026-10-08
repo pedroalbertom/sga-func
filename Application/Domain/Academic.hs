@@ -116,7 +116,7 @@ calcularFrequencia freqs =
     $ Map.toList
     $ foldr (\f acc -> Map.insertWith (++) (get #alunoId f) [get #presente f] acc) Map.empty freqs
   where
-    percentual fs = if null fs then 0.0 else (fromIntegral (length (filter id fs)) / fromIntegral (length fs)) * 100.0
+    percentual fs = if null fs then 0.0 else (fromIntegral (length (filter (== True) fs)) / fromIntegral (length fs)) * 100.0
 
 -- Gera o ranking geral ordenado por média decrescente usando composição (.)
 calcularRanking :: [Nota] -> [(Id Aluno, Double)]
