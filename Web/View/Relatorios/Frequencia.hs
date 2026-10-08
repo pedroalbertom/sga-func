@@ -55,8 +55,9 @@ instance View FrequenciaView where
                     nome = maybe "Aluno não encontrado" (get #nome) maybeAluno
                     matricula = maybe "-" (get #matricula) maybeAluno
                     pctFormatado = Academic.arredondar pct
-                    emRisco = pct < 75.0
+                    barClass :: Text
                     barClass = if emRisco then "bg-danger" else "bg-success"
+                    badgeClass :: Text
                     badgeClass = if emRisco then "bg-danger" else "bg-success"
                     statusTexto = if emRisco then ("Risco de Reprovação (< 75%)" :: Text) else "Frequência Regular"
                     widthStyle = "width: " <> tshow pctFormatado <> "%"

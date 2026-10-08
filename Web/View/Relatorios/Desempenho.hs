@@ -62,6 +62,7 @@ instance View DesempenhoView where
                     matricula = maybe "-" (get #matricula) maybeAluno
                     conceito = Academic.conceitoAluno media
                     situacaoTexto = Academic.formataSituacao (Academic.situacaoAluno media 100.0)
+                    badgeClass :: Text
                     badgeClass = if media >= 7.0 then "bg-success" else if media >= 4.0 then "bg-warning text-dark" else "bg-danger"
                 in [hsx|
                     <tr>
