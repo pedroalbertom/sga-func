@@ -32,6 +32,7 @@
                         base
                         wai
                         text
+                        http-types
                         # ihp-mail           # Email support: https://ihp.digitallyinduced.com/Guide/mail.html
                         # ihp-datasync       # Real-time DataSync
                         # ihp-job-dashboard  # Job dashboard UI
@@ -43,6 +44,7 @@
                         hlint
                         hspec
                         ihp-hspec
+                        process
                     ];
 
                     # Hoogle documentation server (enabled by default on port 8002)

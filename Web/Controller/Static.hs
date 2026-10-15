@@ -4,6 +4,8 @@ import Web.View.Static.Welcome
 import qualified Data.Map.Strict as Map
 
 instance Controller StaticController where
+    beforeAction = requireRead
+
     action WelcomeAction = do
         turmas <- query @Turma |> fetch
         disciplinas <- query @Disciplina |> fetch

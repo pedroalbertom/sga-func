@@ -51,7 +51,7 @@ As fixtures em [`Application/Fixtures.sql`](Application/Fixtures.sql) inserem da
 ### 2. Navegação nos Relatórios
 A navegação é dinâmica:
 * **Página Inicial (`/`):** Lista todas as turmas cadastradas com botões diretos para `[ Ver Desempenho ]` e `[ Ver Frequência ]`.
-* **Ranking Geral (`/Relatorios/Ranking`):** Exibe a classificação geral de todos os alunos ordenada por média.
+* **Ranking Geral (`/Ranking`):** Exibe a classificação geral de todos os alunos ordenada por média.
 
 ### 3. Executar os Testes Unitários
 ```bash
@@ -70,3 +70,16 @@ nix flake check --impure
    > *"Como as funções são puras, escrevemos testes com HSpec validando currying, list comprehensions e aprovações sem precisar de mocks ou banco."*
 4. **Demonstração Web (1 min)** — Abrir `http://localhost:8000`:
    > *"No navegador, a Home lista as turmas. Ao clicar em 'Ver Desempenho' e 'Ver Frequência', os relatórios calculam os resultados em tempo real. No 'Ranking Geral', o pódio é gerado por composição funcional."*
+
+## Sprint 2 — CRUD de estudantes e cursos
+
+A navegação agora inclui **Estudantes** (`/Alunos`) e **Cursos** (`/Cursos`), com criação, busca, detalhes, edição e exclusão. Os estudantes reutilizam `alunos`; cursos são independentes de disciplinas. O vínculo estudante/curso é opcional para preservar os cadastros existentes.
+
+A aplicação exige login em `/NewSession`. O perfil `admin` gerencia os cadastros; `consulta` lê cadastros e relatórios. Aplique a nova migration em bases existentes e crie suas contas com `Application/Script/CreateUser.hs`. Não há credenciais padrão.
+
+- [Slides da apresentação (HTML)](docs/apresentacao-sprint-2.html) e [notas da apresentação](docs/sprint-2-apresentacao.md)
+- [Preparação e roteiro da demo](docs/sprint-2-demo.md)
+- [Domínio: validações e consultas com map, filter, foldr e concatMap](Application/Domain/Catalog.hs)
+- [Testes de domínio](Test/CatalogSpec.hs) e [integração](Test/Integration.hs)
+
+A integridade é validada no servidor e no PostgreSQL por `CHECK`, `UNIQUE` e chaves estrangeiras. Cursos com estudantes e estudantes com histórico acadêmico não podem ser excluídos. O comando de verificação continua sendo `nix flake check --impure`.

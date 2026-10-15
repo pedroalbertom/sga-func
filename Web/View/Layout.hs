@@ -10,14 +10,14 @@ import Application.Helper.View
 defaultLayout :: Html -> Html
 defaultLayout inner = [hsx|
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
     <head>
         {metaTags}
 
         {stylesheets}
         {scripts}
 
-        <title>{pageTitleOrDefault "App"}</title>
+        <title>{pageTitleOrDefault "SGA-Func"}</title>
     </head>
     <body>
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4 shadow-sm">
@@ -25,7 +25,10 @@ defaultLayout inner = [hsx|
                 <a class="navbar-brand fw-bold text-white" href="/">🎓 SGA-Func</a>
                 <div class="navbar-nav ms-auto">
                     <a class="nav-link" href="/">Início (Turmas)</a>
-                    <a class="nav-link" href="/Relatorios/Ranking">Ranking Geral</a>
+                    <a class="nav-link" href={AlunosAction}>Estudantes</a>
+                    <a class="nav-link" href={CursosAction}>Cursos</a>
+                    <a class="nav-link" href={RankingAction}>Ranking Geral</a>
+                    {sessionNavigation}
                 </div>
             </div>
         </nav>
@@ -80,3 +83,11 @@ metaTags = [hsx|
     <meta property="og:description" content="TODO"/>
     {autoRefreshMeta}
 |]
+
+sessionNavigation :: Html
+sessionNavigation = case currentUserOrNothing of
+    Nothing -> [hsx|<a class="nav-link" href={NewSessionAction}>Entrar</a>|]
+    Just user -> [hsx|
+        <span class="navbar-text mx-2">{get #email user} ({get #role_ user})</span>
+        <a class="nav-link js-delete js-delete-no-confirm" href={DeleteSessionAction}>Sair</a>
+    |]

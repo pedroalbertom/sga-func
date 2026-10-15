@@ -1,5 +1,16 @@
 module Application.Helper.Controller where
 
 import IHP.ControllerPrelude
+import Generated.Types
+import Web.Types
+import qualified Application.Domain.Catalog as Catalog
 
--- Here you can add functions which are available in all your controllers
+requireRead :: (?request :: Request, ?respond :: Respond) => IO ()
+requireRead = do
+    ensureIsUser
+    accessDeniedUnless (Catalog.canRead (get #role_ currentUser))
+
+requireWrite :: (?request :: Request, ?respond :: Respond) => IO ()
+requireWrite = do
+    requireRead
+    accessDeniedUnless (Catalog.canWrite (get #role_ currentUser))

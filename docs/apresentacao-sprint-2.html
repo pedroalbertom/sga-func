@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SGA-Func — Sprint 2</title>
+<style>
+:root{color-scheme:dark;font-family:system-ui,sans-serif;background:#101c30;color:#f1f5fc}*{box-sizing:border-box}body{margin:0}main{max-width:1100px;margin:auto;padding:7vh 7vw 100px}.slide{display:none;min-height:68vh}.slide.active{display:block}h1{font-size:clamp(2.5rem,7vw,5rem);line-height:1.08;margin:.5em 0}h2{font-size:clamp(2rem,5vw,3.2rem)}p,li,td,th{font-size:clamp(1.1rem,2.5vw,1.55rem);line-height:1.65}li{margin:.5em 0}a{color:#77d8ec}code{color:#94e8d6}small,.eyebrow{color:#a3b7d4}.eyebrow{text-transform:uppercase;letter-spacing:.15em}table{width:100%;border-collapse:collapse}td,th{text-align:left;padding:12px;border-bottom:1px solid #39485e}nav{position:fixed;bottom:0;background:#15243b;width:100%;padding:18px;display:flex;gap:20px;justify-content:center;align-items:center}button{background:#65dac6;border:0;border-radius:6px;color:#10212b;padding:10px 20px;font-size:1rem;cursor:pointer}button:disabled{opacity:.35;cursor:default}button:focus-visible,a:focus-visible{outline:3px solid white;outline-offset:4px}@media print{:root{color-scheme:light;background:white;color:black}main{padding:0}.slide{display:block;min-height:95vh;break-after:page}nav{display:none}code,a,.eyebrow,small{color:#233b50}p,li,td,th{font-size:18pt}h1{font-size:48pt}h2{font-size:36pt}}
+</style>
+</head>
+<body>
+<main>
+<section class="slide active" aria-label="Slide 1"><p class="eyebrow">UNIFOR · Programação Funcional</p><h1>SGA-Func<br>Sprint 2</h1><p>CRUD de estudantes e cursos, acesso por perfil e integridade em Haskell + IHP + PostgreSQL.</p><p><small>Use as setas do teclado ou os botões abaixo. Para exportar, imprima como PDF.</small></p></section>
+<section class="slide" aria-label="Slide 2"><p class="eyebrow">Modelo</p><h2>Dados com relações explícitas</h2><ul><li>Estudante: nome, matrícula única, e-mail e curso opcional.</li><li>Curso: nome, código único e carga horária.</li><li>Um curso reúne vários estudantes.</li><li>Cursos são independentes das disciplinas dos relatórios.</li></ul><p>Os cadastros e relatórios acadêmicos existentes são preservados.</p></section>
+<section class="slide" aria-label="Slide 3"><p class="eyebrow">CRUD</p><h2>Do formulário à persistência</h2><table><tr><th>Operação</th><th>Interface</th></tr><tr><td>Create</td><td>Formulário com validação</td></tr><tr><td>Read</td><td>Busca, listagem e detalhes</td></tr><tr><td>Update</td><td>Edição dos campos e do vínculo de curso</td></tr><tr><td>Delete</td><td>Confirmação e proteção dos vínculos</td></tr></table></section>
+<section class="slide" aria-label="Slide 4"><p class="eyebrow">Acesso</p><h2>Permissões verificadas no servidor</h2><table><tr><th>Perfil</th><th>Leitura</th><th>Escrita</th></tr><tr><td>Visitante</td><td>Login exigido</td><td>Login exigido</td></tr><tr><td>Consulta</td><td>Permitida</td><td>HTTP 403</td></tr><tr><td>Administrador</td><td>Permitida</td><td>Permitida</td></tr></table><p>Sessão IHP, senha com hash e provisionamento local das contas. URLs diretas também passam pelas regras.</p></section>
+<section class="slide" aria-label="Slide 5"><p class="eyebrow">Integridade</p><h2>Validação em duas camadas</h2><ul><li>Formulários: mensagens junto aos campos inválidos.</li><li>PostgreSQL: <code>CHECK</code>, <code>UNIQUE</code> e chaves estrangeiras.</li><li>Carga horária entre 1 e 10000; matrícula numérica e código normalizado.</li><li>Curso com estudantes não pode ser excluído.</li><li>Estudante com notas ou frequências não pode ser excluído.</li></ul></section>
+<section class="slide" aria-label="Slide 6"><p class="eyebrow">Programação funcional</p><h2>Consultas que usam listas imutáveis</h2><table><tr><th>Operação</th><th>Aplicação real</th></tr><tr><td><code>filter</code></td><td>Busca de estudantes e cursos</td></tr><tr><td><code>map</code></td><td>Projeção do resumo de cada curso</td></tr><tr><td><code>foldr</code> / reduce</td><td>Total de estudantes vinculados</td></tr><tr><td><code>concatMap</code> / flatMap</td><td>Lista única de pares curso/estudante</td></tr></table><p><small>Código: Application/Domain/Catalog.hs. Os resultados aparecem nas listagens.</small></p></section>
+<section class="slide" aria-label="Slide 7"><p class="eyebrow">Demo</p><h2>Mostrar o fluxo completo</h2><ol><li>Entrar como admin e criar um curso e uma estudante.</li><li>Buscar, abrir detalhes e editar os dois cadastros.</li><li>Mostrar duplicidade e exclusão de curso com vínculo.</li><li>Entrar como consulta e tentar acessar uma URL de edição.</li><li>Voltar como admin, excluir a estudante e depois o curso.</li></ol><p><a href="sprint-2-demo.md">Abrir preparação e roteiro completo</a></p></section>
+<section class="slide" aria-label="Slide 8"><p class="eyebrow">Verificação</p><h2>Regras com testes reproduzíveis</h2><ul><li>Domínio: validadores, matriz de permissões e funções sobre listas.</li><li>Integração: CRUD nos controllers, login e autorização.</li><li>Banco temporário: constraints e proteção de relacionamentos.</li></ul><p><code>nix flake check --impure</code></p><p><small>Mostre o resultado real do comando e execute a demo. Este slide descreve a verificação; não substitui sua execução.</small></p></section>
+</main>
+<nav aria-label="Navegação da apresentação"><button id="previous" type="button">← Anterior</button><span id="position" aria-live="polite">1 / 8</span><button id="next" type="button">Próximo →</button></nav>
+<script>
+const slides=Array.from(document.querySelectorAll('.slide'));
+const previous=document.getElementById('previous');
+const next=document.getElementById('next');
+let current=0;
+function show(index){current=Math.max(0,Math.min(slides.length-1,index));slides.forEach((slide,i)=>{slide.classList.toggle('active',i===current);slide.setAttribute('aria-hidden',String(i!==current));});previous.disabled=current===0;next.disabled=current===slides.length-1;document.getElementById('position').textContent=`${current+1} / ${slides.length}`;}
+previous.addEventListener('click',()=>show(current-1));next.addEventListener('click',()=>show(current+1));
+document.addEventListener('keydown',event=>{if(event.target.closest('input,textarea'))return;if(['ArrowRight','PageDown',' '].includes(event.key)){event.preventDefault();show(current+1);}if(['ArrowLeft','PageUp'].includes(event.key)){event.preventDefault();show(current-1);}if(event.key==='Home')show(0);if(event.key==='End')show(slides.length-1);});
+show(0);
+</script>
+</body>
+</html>

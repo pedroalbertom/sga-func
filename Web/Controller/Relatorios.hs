@@ -8,6 +8,8 @@ import qualified Application.Domain.Academic as Academic
 import qualified Data.Map.Strict as Map
 
 instance Controller RelatoriosController where
+    beforeAction = requireRead
+
     action DesempenhoAction { turmaId } = do
         turma <- fetch turmaId
         disciplina <- fetch (get #disciplinaId turma)
