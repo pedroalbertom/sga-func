@@ -12,3 +12,4 @@ GET /    WelcomeAction
 instance AutoRoute SessionsController
 instance AutoRoute AlunosController
 instance AutoRoute CursosController
+instance AutoRoute DashboardController

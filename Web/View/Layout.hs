@@ -25,6 +25,7 @@ defaultLayout inner = [hsx|
                 <a class="navbar-brand fw-bold text-white" href="/">🎓 SGA-Func</a>
                 <div class="navbar-nav ms-auto">
                     <a class="nav-link" href="/">Início (Turmas)</a>
+                    <a class="nav-link" href={DashboardAction}>Dashboard</a>
                     <a class="nav-link" href={AlunosAction}>Estudantes</a>
                     <a class="nav-link" href={CursosAction}>Cursos</a>
                     <a class="nav-link" href={RankingAction}>Ranking Geral</a>

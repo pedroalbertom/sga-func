@@ -75,7 +75,9 @@ nix flake check --impure
 
 A navegação agora inclui **Estudantes** (`/Alunos`) e **Cursos** (`/Cursos`), com criação, busca, detalhes, edição e exclusão. Os estudantes reutilizam `alunos`; cursos são independentes de disciplinas. O vínculo estudante/curso é opcional para preservar os cadastros existentes.
 
-A aplicação exige login em `/NewSession`. O perfil `admin` gerencia os cadastros; `consulta` lê cadastros e relatórios. Aplique a nova migration em bases existentes e crie suas contas com `Application/Script/CreateUser.hs`. Não há credenciais padrão.
+A aplicação exige login em `/NewSession`. O perfil `admin` gerencia os cadastros; `consulta` lê cadastros e relatórios. Novas contas podem ser criadas com `Application/Script/CreateUser.hs`. Para desenvolvimento e testes locais, [`Application/Fixtures.sql`](Application/Fixtures.sql) fornece as contas de demonstração:
+* **Administrador:** `admin@example.com` / `senha-de-teste-123`
+* **Consulta:** `consulta@example.com` / `senha-de-teste-123`
 
 - [Slides da apresentação (HTML)](docs/apresentacao-sprint-2.html) e [notas da apresentação](docs/sprint-2-apresentacao.md)
 - [Preparação e roteiro da demo](docs/sprint-2-demo.md)
@@ -83,3 +85,37 @@ A aplicação exige login em `/NewSession`. O perfil `admin` gerencia os cadastr
 - [Testes de domínio](Test/CatalogSpec.hs) e [integração](Test/Integration.hs)
 
 A integridade é validada no servidor e no PostgreSQL por `CHECK`, `UNIQUE` e chaves estrangeiras. Cursos com estudantes e estudantes com histórico acadêmico não podem ser excluídos. O comando de verificação continua sendo `nix flake check --impure`.
+
+---
+
+## 🛡️ Sprint 3 — Tópicos Avançados & Segurança
+
+A Sprint 3 incorpora os conceitos de ponta do paradigma funcional e introduz criptografia de campos confidenciais:
+* **Monads**: `Reader AcademicConfig` para injeção pura de parâmetros institucionais e `Either Text a` para pipelines de validação encadeada (*Railway-Oriented Programming*).
+* **Functors**: Mapeamento e transformação sobre coleções e tipos customizados (`ItemRelatorio a`).
+* **Continuation Passing Style (CPS)**: Implementação de fluxo de matrícula em `realizarMatriculaCPS` com continuações de sucesso e falha explicitadas.
+* **Lazy Evaluation**: Gerador infinito de protocolos sob demanda (`geradorProtocolos`) consumido via `take n`.
+* **Criptografia Simétrica & Segurança**: Cifragem reversível do documento do aluno (CPF/RG) via keystream cipher puro no banco de dados. Exibição descriptografada para `admin` e mascaramento automático para `consulta`.
+
+- [Slides da apresentação Sprint 3 (HTML)](docs/apresentacao-sprint-3.html) e [notas da apresentação](docs/sprint-3-apresentacao.md)
+- [Roteiro prático da demo da Sprint 3](docs/sprint-3-demo.md)
+- [Domínio avançado: Monads, CPS, Lazy Evaluation](Application/Domain/Advanced.hs)
+- [Domínio de segurança: Criptografia e mascaramento](Application/Domain/Security.hs)
+- [Testes unitários da Sprint 3](Test/AdvancedSpec.hs) e [Testes de segurança](Test/SecuritySpec.hs)
+
+---
+
+## 📊 Sprint 4 — Frontend Completo, SSR & Relatórios
+
+A Sprint 4 conclui o sistema com uma visão panorâmica e interativa da instituição:
+* **Dashboard Acadêmico (`/Dashboard`)**: Agregações puras de KPIs globais (média geral institucional, taxa de aprovação, contagem de turmas e alunos em risco).
+* **Consolidação por Curso**: Tabela com total de alunos e média ponderada agrupada por curso.
+* **Pódio & Atenção Pedagógica**: Ranking dos maiores desempenhos e tabela filtrada de estudantes em situação de risco (reprovação ou final).
+* **Filtros Dinâmicos**: Filtragem por curso em tempo real diretamente na interface SSR.
+* **Componentes Reativos**: Simulador interativo de notas e frequência no frontend sem requisição ao servidor, além de suporte a AutoRefresh com WebSockets/morphdom do IHP.
+
+- [Slides da apresentação Sprint 4 (HTML)](docs/apresentacao-sprint-4.html) e [notas da apresentação](docs/sprint-4-apresentacao.md)
+- [Roteiro prático da demo da Sprint 4](docs/sprint-4-demo.md)
+- [Domínio do Dashboard: agregações puras e métricas](Application/Domain/Dashboard.hs)
+- [View SSR em HSX do Dashboard](Web/View/Dashboard/Index.hs)
+- [Testes de unidade do Dashboard](Test/DashboardSpec.hs)

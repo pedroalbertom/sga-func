@@ -42,3 +42,7 @@ data CursosController
     | UpdateCursoAction { cursoId :: !(Id Curso) }
     | DeleteCursoAction { cursoId :: !(Id Curso) }
     deriving (Eq, Show, Data)
+
+data DashboardController
+    = DashboardAction
+    deriving (Eq, Show, Data)

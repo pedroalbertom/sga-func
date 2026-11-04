@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SGA-Func — Sprint 4: Frontend Completo, SSR & Relatórios</title>
+<style>
+:root{color-scheme:dark;font-family:system-ui,sans-serif;background:#0d1829;color:#f1f5fc}*{box-sizing:border-box}body{margin:0}main{max-width:1100px;margin:auto;padding:7vh 7vw 100px}.slide{display:none;min-height:68vh}.slide.active{display:block}h1{font-size:clamp(2.5rem,7vw,5rem);line-height:1.08;margin:.5em 0}h2{font-size:clamp(2rem,5vw,3.2rem)}p,li,td,th{font-size:clamp(1.1rem,2.5vw,1.55rem);line-height:1.65}li{margin:.5em 0}a{color:#77d8ec}code{color:#94e8d6}small,.eyebrow{color:#a3b7d4}.eyebrow{text-transform:uppercase;letter-spacing:.15em}table{width:100%;border-collapse:collapse}td,th{text-align:left;padding:12px;border-bottom:1px solid #39485e}nav{position:fixed;bottom:0;background:#132035;width:100%;padding:18px;display:flex;gap:20px;justify-content:center;align-items:center}button{background:#65dac6;border:0;border-radius:6px;color:#10212b;padding:10px 20px;font-size:1rem;cursor:pointer}button:disabled{opacity:.35;cursor:default}button:focus-visible,a:focus-visible{outline:3px solid white;outline-offset:4px}@media print{:root{color-scheme:light;background:white;color:black}main{padding:0}.slide{display:block;min-height:95vh;break-after:page}nav{display:none}code,a,.eyebrow,small{color:#233b50}p,li,td,th{font-size:18pt}h1{font-size:48pt}h2{font-size:36pt}}
+</style>
+</head>
+<body>
+<main>
+<section class="slide active" aria-label="Slide 1">
+  <p class="eyebrow">UNIFOR · Programação Funcional</p>
+  <h1>SGA-Func<br>Sprint 4</h1>
+  <p>Frontend Completo com Server-Side Rendering (HSX / SSR), Dashboard Analítico, Agregações Puras e Componentes Reativos.</p>
+  <p><small>Use as setas do teclado (←/→) ou os botões de navegação. Imprima para exportar em PDF.</small></p>
+</section>
+
+<section class="slide" aria-label="Slide 2">
+  <p class="eyebrow">Visão Geral da Entrega</p>
+  <h2>Frontend Completo &amp; SSR em Haskell</h2>
+  <ul>
+    <li><strong>Server-Side Rendering (SSR):</strong> Templates compilados em tempo de compilação via <code>HSX</code> nativo do IHP, garantindo tipagem estática e segurança contra injeção de HTML/XSS.</li>
+    <li><strong>Dashboard Analítico Central:</strong> Rota <code>/Dashboard</code> agregando métricas institucionais, médias consolidadas por curso, rankings e monitoramento de alunos em risco.</li>
+    <li><strong>Componentes Reativos:</strong> Integração de micro-componente reativo no cliente para simulação em tempo real, aliada ao IHP AutoRefresh com morphdom.</li>
+  </ul>
+</section>
+
+<section class="slide" aria-label="Slide 3">
+  <p class="eyebrow">Agregações Funcionais</p>
+  <h2>Métricas Puras do Dashboard</h2>
+  <table>
+    <tr><th>Métrica</th><th>Operação Funcional</th><th>Finalidade</th></tr>
+    <tr><td>Média Institucional</td><td><code>foldr</code> + <code>map</code> + <code>filter</code></td><td>Média global ponderada de todos os estudantes ativos.</td></tr>
+    <tr><td>Taxa de Aprovação</td><td><code>length . filter (== Aprovado)</code></td><td>Indicador percentual de alunos que atingiram nota e frequência.</td></tr>
+    <tr><td>Desempenho por Curso</td><td>Agrupamento por <code>Map (Id Curso)</code></td><td>Visão comparativa de médias e quantidade de matrículas por curso.</td></tr>
+    <tr><td>Pódio Top N</td><td><code>take n . sortBy (comparing Down)</code></td><td>Composição de funções para ranking dos destaques acadêmicos.</td></tr>
+  </table>
+  <p><small>Código: Application/Domain/Dashboard.hs</small></p>
+</section>
+
+<section class="slide" aria-label="Slide 4">
+  <p class="eyebrow">Arquitetura de Visualização</p>
+  <h2>Interface Rica com HSX</h2>
+  <ul>
+    <li><strong>Cards de KPI:</strong> Indicadores visuais rápidos com paleta semântica Bootstrap 5 (Sucesso, Atenção, Alerta).</li>
+    <li><strong>Filtros Dinâmicos por Curso:</strong> Filtro reativo no servidor que recalcula instantaneamente os resumos sob demanda.</li>
+    <li><strong>Navegação Integrada:</strong> Acesso direto através da barra superior do sistema (<code>Layout.hs</code>).</li>
+  </ul>
+</section>
+
+<section class="slide" aria-label="Slide 5">
+  <p class="eyebrow">Reatividade</p>
+  <h2>Componente Reativo no Frontend</h2>
+  <ul>
+    <li><strong>Simulador Interativo de Média:</strong> Sliders e inputs de notas (AV1, AV2, Trabalho) e frequência com cálculo reativo imediato no DOM.</li>
+    <li><strong>Feedback Visual Instantâneo:</strong> Atualização dinâmica de badges coloridas (Aprovado / Prova Final / Reprovado) sem submeter formulários nem recarregar a página.</li>
+    <li><strong>Suporte a IHP AutoRefresh:</strong> Sincronização via WebSockets e morphdom nativa do IHP.</li>
+  </ul>
+</section>
+
+<section class="slide" aria-label="Slide 6">
+  <p class="eyebrow">Roteiro de Demonstração</p>
+  <h2>Passo a Passo da Apresentação</h2>
+  <ol>
+    <li>Acessar <code>http://localhost:8000/Dashboard</code> autenticado.</li>
+    <li>Apresentar os 4 cards de KPI com os totais institucionais.</li>
+    <li>Filtrar pelo curso de <strong>Ciência da Computação</strong> e verificar a atualização dinâmica das tabelas.</li>
+    <li>Interagir com o <strong>Simulador Reativo</strong> variando a presença e as notas com feedback imediato.</li>
+    <li>Exibir a lista de <strong>Alunos em Risco</strong> e navegar diretamente para a página de detalhes.</li>
+  </ol>
+</section>
+
+<section class="slide" aria-label="Slide 7">
+  <p class="eyebrow">Verificação</p>
+  <h2>Suíte de Testes Automatizados</h2>
+  <ul>
+    <li><code>Test/DashboardSpec.hs</code>: Testes das agregações, médias institucionais, ordenação do pódio e listas de risco.</li>
+    <li>Testes de regressão cobrindo todas as sprints (0, 1, 2, 3 e 4).</li>
+  </ul>
+  <p><code>nix flake check --impure</code></p>
+</section>
+</main>
+
+<nav aria-label="Navegação da apresentação">
+  <button id="previous" type="button">← Anterior</button>
+  <span id="position" aria-live="polite">1 / 7</span>
+  <button id="next" type="button">Próximo →</button>
+</nav>
+
+<script>
+const slides=Array.from(document.querySelectorAll('.slide'));
+const previous=document.getElementById('previous');
+const next=document.getElementById('next');
+let current=0;
+function show(index){current=Math.max(0,Math.min(slides.length-1,index));slides.forEach((slide,i)=>{slide.classList.toggle('active',i===current);slide.setAttribute('aria-hidden',String(i!==current));});previous.disabled=current===0;next.disabled=current===slides.length-1;document.getElementById('position').textContent=`${current+1} / ${slides.length}`;}
+previous.addEventListener('click',()=>show(current-1));next.addEventListener('click',()=>show(current+1));
+document.addEventListener('keydown',event=>{if(event.target.closest('input,textarea'))return;if(['ArrowRight','PageDown',' '].includes(event.key)){event.preventDefault();show(current+1);}if(['ArrowLeft','PageUp'].includes(event.key)){event.preventDefault();show(current-1);}if(event.key==='Home')show(0);if(event.key==='End')show(slides.length-1);});
+show(0);
+</script>
+</body>
+</html>
