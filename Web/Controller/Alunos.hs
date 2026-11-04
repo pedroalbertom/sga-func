@@ -4,6 +4,7 @@ import Web.Controller.Prelude
 import Data.Traversable (traverse)
 import Web.View.Alunos
 import qualified Application.Domain.Catalog as Catalog
+import qualified Application.Domain.Security as Security
 import qualified Data.Text as Text
 
 instance Controller AlunosController where
@@ -79,11 +80,16 @@ buildAluno aluno = do
         |> validateField #email Catalog.validEmail
         |> validateIsUnique #matricula
 
-    case get #cursoId aluno of
-        Nothing -> pure aluno
+    let docParam = paramOrDefault "" "documento"
+    let alunoComDoc = if Text.null (Text.strip docParam)
+            then aluno
+            else aluno |> set #documentoCriptografado (Just (Security.criptografarTexto Security.chaveMestraPadrao (Text.strip docParam)))
+
+    case get #cursoId alunoComDoc of
+        Nothing -> pure alunoComDoc
         Just cursoId -> do
             exists <- query @Curso |> filterWhere (#id, cursoId) |> fetchExists
-            pure (if exists then aluno else attachValidatorResult #cursoId (Failure "Selecione um curso existente.") aluno)
+            pure (if exists then alunoComDoc else attachValidatorResult #cursoId (Failure "Selecione um curso existente.") alunoComDoc)
 
 findAlunoOr404 :: (?request :: Request, ?respond :: Respond, ?modelContext :: ModelContext) => Id Aluno -> IO Aluno
 findAlunoOr404 alunoId = do

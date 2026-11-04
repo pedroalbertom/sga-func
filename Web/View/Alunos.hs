@@ -2,6 +2,7 @@ module Web.View.Alunos where
 
 import Web.View.Prelude
 import qualified Application.Domain.Catalog as Catalog
+import qualified Application.Domain.Security as Security
 
 -- Optional course selection keeps legacy students valid.
 instance CanSelect Curso where
@@ -56,11 +57,28 @@ instance View FormView where
 instance View ShowView where
     html ShowView { .. } = [hsx|
         <h1>{get #nome aluno}</h1>
-        <dl><dt>Matrícula</dt><dd>{get #matricula aluno}</dd><dt>E-mail</dt><dd>{get #email aluno}</dd>
-            <dt>Curso</dt><dd>{maybe "Sem curso" (get #nome) curso}</dd></dl>
+        <dl>
+            <dt>Matrícula</dt><dd>{get #matricula aluno}</dd>
+            <dt>E-mail</dt><dd>{get #email aluno}</dd>
+            <dt>Curso</dt><dd>{maybe "Sem curso" (get #nome) curso}</dd>
+            <dt>Documento Confidencial</dt>
+            <dd>{renderDocumento aluno}</dd>
+        </dl>
         {studentActions aluno}
         <a class="btn btn-outline-secondary" href={AlunosAction}>Voltar aos estudantes</a>
     |]
+
+renderDocumento :: Aluno -> Html
+renderDocumento aluno = case get #documentoCriptografado aluno of
+    Nothing -> [hsx|<span class="text-muted">Não cadastrado</span>|]
+    Just docHex ->
+        if Catalog.canWrite (get #role_ currentUser)
+            then case Security.descriptografarTexto Security.chaveMestraPadrao docHex of
+                Right texto -> [hsx|<span><code>{texto}</code> <span class="badge bg-success ms-2">Descriptografado (Admin)</span></span>|]
+                Left _      -> [hsx|<span class="text-danger">Erro de descriptografia</span>|]
+            else case Security.descriptografarTexto Security.chaveMestraPadrao docHex of
+                Right texto -> [hsx|<span><code>{Security.mascararDocumento texto}</code> <span class="badge bg-secondary ms-2">Mascarado (Consulta)</span></span>|]
+                Left _      -> [hsx|<span class="text-muted">***</span>|]
 
 newButton :: Html
 newButton = when (Catalog.canWrite (get #role_ currentUser)) [hsx|<a class="btn btn-primary" href={NewAlunoAction}>Novo estudante</a>|]
@@ -71,6 +89,11 @@ renderForm aluno cursos = formFor aluno [hsx|
             {(textField #matricula) { fieldLabel = "Matrícula", required = True, helpText = "De 4 a 20 dígitos." }}
             {(textField #email) { fieldLabel = "E-mail", required = True }}
             {(selectField #cursoId cursos) { fieldLabel = "Curso", placeholder = "Sem curso" }}
+            <div class="form-group mb-3">
+                <label class="form-label" for="aluno_documento">Documento Confidencial (CPF/RG)</label>
+                <input type="text" name="documento" id="aluno_documento" class="form-control" placeholder="Cifrado com chave simétrica no banco"/>
+                <div class="form-text">Armazenado com criptografia simétrica; visível apenas para administradores.</div>
+            </div>
             <button class="btn btn-primary" type="submit">Salvar estudante</button>
             <a class="btn btn-outline-secondary" href={AlunosAction}>Cancelar</a>
         |]

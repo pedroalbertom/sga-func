@@ -195,3 +195,13 @@ INSERT INTO frequencias (id, aluno_id, turma_id, data, presente) VALUES
     (uuid_generate_v4(), '00000000-0000-0000-0000-000000000101', '00000000-0000-0000-0000-000000000023', '2026-03-01', true),
     (uuid_generate_v4(), '00000000-0000-0000-0000-000000000108', '00000000-0000-0000-0000-000000000023', '2026-03-01', true),
     (uuid_generate_v4(), '00000000-0000-0000-0000-000000000107', '00000000-0000-0000-0000-000000000023', '2026-03-01', true);
+
+-- Usuários (Sprint 2 - Autenticação)
+-- Senha de teste para ambos: senha-de-teste-123
+INSERT INTO users (id, email, password_hash, role) VALUES
+    ('00000000-0000-0000-0000-000000000901', 'admin@example.com', 'sha256|17|VCENkp2Hnqc/JH0/etD+mg==|I2xvPEgMIFQjLOL6zyw0Hvtn0MHhF0RSNjh6vJkS5rU=', 'admin'),
+    ('00000000-0000-0000-0000-000000000902', 'consulta@example.com', 'sha256|17|OmF9defmU3ql7e6U8n+v7Q==|eajmj4+xgbE3ogUAS9JXpXIGZEsADa/5EyPKi8NriFE=', 'consulta')
+ON CONFLICT DO NOTHING;
+
+-- Documento confidencial de exemplo para Alice Silva (123.456.789-00 cifrado)
+UPDATE alunos SET documento_criptografado = '62757203726078751a6b7c666275' WHERE matricula = '241001';

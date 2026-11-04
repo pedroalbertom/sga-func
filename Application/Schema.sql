@@ -4,7 +4,8 @@ CREATE TABLE alunos (
     nome TEXT NOT NULL,
     matricula TEXT NOT NULL UNIQUE,
     email TEXT NOT NULL,
-    curso_id UUID DEFAULT NULL
+    curso_id UUID DEFAULT NULL,
+    documento_criptografado TEXT DEFAULT NULL
 );
 CREATE TABLE professores (
     id UUID DEFAULT uuid_generate_v4() PRIMARY KEY NOT NULL,
