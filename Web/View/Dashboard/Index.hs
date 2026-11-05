@@ -229,7 +229,7 @@ renderOpcaoCurso :: Maybe (Id Curso) -> Curso -> Html
 renderOpcaoCurso sel curso =
     let cId = get #id curso
         isSelected = sel == Just cId
-    in [hsx|<option value={show cId} selected={isSelected}>{get #nome curso} ({get #codigo curso})</option>|]
+    in [hsx|<option value={tshow cId} selected={isSelected}>{get #nome curso} ({get #codigo curso})</option>|]
 
 renderLinhaCurso :: MetricaCurso -> Html
 renderLinhaCurso MetricaCurso { .. } = [hsx|
@@ -259,7 +259,8 @@ renderLinhaTop (idx, AlunoResumoDashboard { .. }) =
 
 renderLinhaCritico :: AlunoResumoDashboard -> Html
 renderLinhaCritico AlunoResumoDashboard { .. } =
-    let badgeClass = case situacao of
+    let badgeClass :: Text
+        badgeClass = case situacao of
             ProvaFinal        -> "badge bg-warning text-dark"
             ReprovadoPorFalta -> "badge bg-danger"
             ReprovadoPorNota  -> "badge bg-danger"
