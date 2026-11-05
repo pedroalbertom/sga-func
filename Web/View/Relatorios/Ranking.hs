@@ -52,8 +52,9 @@ instance View RankingView where
                     nome = maybe "Aluno não encontrado" (get #nome) maybeAluno
                     matricula = maybe "-" (get #matricula) maybeAluno
                     conceito = Academic.conceitoAluno media
+                    badgePosicao :: (Text, Text)
                     badgePosicao = case pos of
-                        1 -> ("badge bg-warning text-dark fs-6" :: Text, "🥇 1º")
+                        1 -> ("badge bg-warning text-dark fs-6", "🥇 1º")
                         2 -> ("badge bg-secondary fs-6", "🥈 2º")
                         3 -> ("badge bg-info text-dark fs-6", "🥉 3º")
                         n -> ("badge bg-light text-dark border", tshow n <> "º")

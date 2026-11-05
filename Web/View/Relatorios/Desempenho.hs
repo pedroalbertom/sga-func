@@ -64,6 +64,8 @@ instance View DesempenhoView where
                     situacaoTexto = Academic.formataSituacao (Academic.situacaoAluno media 100.0)
                     badgeClass :: Text
                     badgeClass = if media >= 7.0 then "bg-success" else if media >= 4.0 then "bg-warning text-dark" else "bg-danger"
+                    fullBadgeClass :: Text
+                    fullBadgeClass = "badge " <> badgeClass
                 in [hsx|
                     <tr>
                         <td><code>{matricula}</code></td>
@@ -73,7 +75,7 @@ instance View DesempenhoView where
                             <span class="badge bg-secondary fs-6">{tshow conceito}</span>
                         </td>
                         <td class="text-center">
-                            <span class={"badge " <> badgeClass}>
+                            <span class={fullBadgeClass}>
                                 {situacaoTexto}
                             </span>
                         </td>

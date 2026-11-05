@@ -60,6 +60,10 @@ instance View FrequenciaView where
                     barClass = if emRisco then "bg-danger" else "bg-success"
                     badgeClass :: Text
                     badgeClass = if emRisco then "bg-danger" else "bg-success"
+                    fullBarClass :: Text
+                    fullBarClass = "progress-bar " <> barClass
+                    fullBadgeClass :: Text
+                    fullBadgeClass = "badge " <> badgeClass
                     statusTexto = if emRisco then ("Risco de Reprovação (< 75%)" :: Text) else "Frequência Regular"
                     widthStyle = "width: " <> tshow pctFormatado <> "%"
                 in [hsx|
@@ -68,14 +72,14 @@ instance View FrequenciaView where
                         <td class="fw-semibold">{nome}</td>
                         <td class="text-center">
                             <div class="progress" style="height: 18px;">
-                                <div class={"progress-bar " <> barClass} role="progressbar" style={widthStyle} aria-valuenow={tshow pctFormatado} aria-valuemin="0" aria-valuemax="100">
+                                <div class={fullBarClass} role="progressbar" style={widthStyle} aria-valuenow={tshow pctFormatado} aria-valuemin="0" aria-valuemax="100">
                                     {tshow pctFormatado}%
                                 </div>
                             </div>
                         </td>
                         <td class="text-center fw-bold">{tshow pctFormatado}%</td>
                         <td class="text-center">
-                            <span class={"badge " <> badgeClass}>{statusTexto}</span>
+                            <span class={fullBadgeClass}>{statusTexto}</span>
                         </td>
                     </tr>
                 |]
