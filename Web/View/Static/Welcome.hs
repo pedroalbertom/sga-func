@@ -1,5 +1,6 @@
 module Web.View.Static.Welcome where
 import Web.View.Prelude
+import qualified Application.Domain.Catalog as Catalog
 import qualified Data.Map.Strict as Map
 
 data WelcomeView = WelcomeView
@@ -17,12 +18,7 @@ instance View WelcomeView where
                     Acompanhamento de turmas, lançamentos de notas, frequência e relatórios de desempenho.
                 </p>
                 <div class="mt-4 d-flex gap-2">
-                    <a class="btn btn-primary btn-lg" href={DashboardAction}>
-                        Abrir Dashboard
-                    </a>
-                    <a class="btn btn-outline-secondary btn-lg" href={pathTo RankingAction}>
-                        Ranking Geral
-                    </a>
+                    {renderHeroActions}
                 </div>
             </div>
         </div>
@@ -37,6 +33,16 @@ instance View WelcomeView where
         </div>
     |]
       where
+        renderHeroActions =
+            if Catalog.canReadStaff (get #role_ currentUser)
+                then [hsx|
+                    <a class="btn btn-primary btn-lg" href={DashboardAction}>Abrir Dashboard</a>
+                    <a class="btn btn-outline-secondary btn-lg" href={pathTo RankingAction}>Ranking Geral</a>
+                |]
+                else [hsx|
+                    <a class="btn btn-primary btn-lg" href={MeuBoletimAction}>Ver Meu Boletim</a>
+                |]
+
         renderListaTurmas =
             if null turmas
                 then [hsx|<p class="text-muted">Nenhuma turma cadastrada no momento.</p>|]
@@ -58,14 +64,19 @@ instance View WelcomeView where
                             <h5 class="fw-bold mb-1">{nomeDisc}</h5>
                             <p class="text-muted small mb-3">Semestre: {get #semestre turma}</p>
                         </div>
-                        <div class="d-flex gap-2">
-                            <a class="btn btn-outline-primary btn-sm" href={pathTo (DesempenhoAction (get #id turma))}>
-                                Desempenho
-                            </a>
-                            <a class="btn btn-outline-success btn-sm" href={pathTo (FrequenciaAction (get #id turma))}>
-                                Frequência
-                            </a>
-                        </div>
+                        {renderTurmaActions turma}
                     </div>
+                </div>
+            |]
+
+        renderTurmaActions turma =
+            when (Catalog.canReadStaff (get #role_ currentUser)) [hsx|
+                <div class="d-flex gap-2">
+                    <a class="btn btn-outline-primary btn-sm" href={pathTo (DesempenhoAction (get #id turma))}>
+                        Desempenho
+                    </a>
+                    <a class="btn btn-outline-success btn-sm" href={pathTo (FrequenciaAction (get #id turma))}>
+                        Frequência
+                    </a>
                 </div>
             |]

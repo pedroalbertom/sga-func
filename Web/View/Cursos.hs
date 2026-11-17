@@ -3,7 +3,7 @@ module Web.View.Cursos where
 import Web.View.Prelude
 import qualified Application.Domain.Catalog as Catalog
 
-data IndexView = IndexView { cursos :: [Curso], busca :: Text, resumo :: [(Curso, Int)], vinculados :: [(Text, Text)] }
+data IndexView = IndexView { cursos :: [Curso], busca :: Text, resumo :: [(Curso, Int)] }
 data FormView = FormView { curso :: Curso }
 data ShowView = ShowView { curso :: Curso, alunos :: [Aluno] }
 
@@ -23,9 +23,6 @@ instance View IndexView where
             <tbody>{forEach resumo renderCurso}</tbody>
         </table></div>
         {emptyMessage (null cursos) "Nenhum curso encontrado."}
-        <h2 class="h4 mt-4">Estudantes por curso</h2>
-        <ul>{forEach vinculados renderVinculo}</ul>
-        {emptyMessage (null vinculados) "Nenhum estudante vinculado aos cursos encontrados."}
     |]
 
 renderCurso :: (Curso, Int) -> Html
@@ -71,9 +68,6 @@ renderForm curso = formFor curso [hsx|
             <button class="btn btn-primary" type="submit">Salvar curso</button>
             <a class="btn btn-outline-secondary" href={CursosAction}>Cancelar</a>
         |]
-
-renderVinculo :: (Text, Text) -> Html
-renderVinculo (curso, aluno) = [hsx|<li>{curso}: {aluno}</li>|]
 
 renderEstudante :: Aluno -> Html
 renderEstudante aluno = [hsx|<li><a href={ShowAlunoAction (get #id aluno)}>{get #nome aluno}</a></li>|]

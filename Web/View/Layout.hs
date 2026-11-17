@@ -6,6 +6,7 @@ import Generated.Types
 import Web.Types
 import Web.Routes
 import Application.Helper.View
+import qualified Application.Domain.Catalog as Catalog
 
 defaultLayout :: Html -> Html
 defaultLayout inner = [hsx|
@@ -24,12 +25,7 @@ defaultLayout inner = [hsx|
             <div class="container">
                 <a class="navbar-brand fw-bold text-white" href="/">SGA-Func</a>
                 <div class="navbar-nav ms-auto">
-                    <a class="nav-link" href="/">Início (Turmas)</a>
-                    <a class="nav-link" href={DashboardAction}>Dashboard</a>
-                    <a class="nav-link" href={AlunosAction}>Estudantes</a>
-                    <a class="nav-link" href={ProfessoresAction}>Professores</a>
-                    <a class="nav-link" href={CursosAction}>Cursos</a>
-                    <a class="nav-link" href={RankingAction}>Ranking Geral</a>
+                    {navLinks}
                     {sessionNavigation}
                 </div>
             </div>
@@ -93,3 +89,22 @@ sessionNavigation = case currentUserOrNothing of
         <span class="navbar-text mx-2">{get #email user} ({get #role_ user})</span>
         <a class="nav-link js-delete js-delete-no-confirm" href={DeleteSessionAction}>Sair</a>
     |]
+
+navLinks :: Html
+navLinks = case currentUserOrNothing of
+    Nothing -> mempty
+    Just user
+        | Catalog.canReadStaff (get #role_ user) -> [hsx|
+            <a class="nav-link" href="/">Início (Turmas)</a>
+            <a class="nav-link" href={DashboardAction}>Dashboard</a>
+            <a class="nav-link" href={AlunosAction}>Estudantes</a>
+            <a class="nav-link" href={ProfessoresAction}>Professores</a>
+            <a class="nav-link" href={CursosAction}>Cursos</a>
+            <a class="nav-link" href={RankingAction}>Ranking Geral</a>
+        |]
+        | otherwise -> [hsx|
+            <a class="nav-link" href="/">Início (Turmas)</a>
+            <a class="nav-link" href={MeuBoletimAction}>Meu Boletim</a>
+            <a class="nav-link" href={ProfessoresAction}>Professores</a>
+            <a class="nav-link" href={CursosAction}>Cursos</a>
+        |]

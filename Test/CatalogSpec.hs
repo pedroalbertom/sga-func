@@ -9,9 +9,10 @@ import Test.Hspec
 
 spec :: Spec
 spec = describe "Sprint 2: catálogo e permissões" do
-    it "permite leitura aos dois perfis e escrita apenas ao admin" do
-        map canRead ["admin", "consulta", "", "professor"] `shouldBe` [True, True, False, False]
-        map canWrite ["admin", "consulta", "", "ADMIN"] `shouldBe` [True, False, False, False]
+    it "permite leitura básica aos 3 perfis, relatórios ao staff e escrita apenas ao admin" do
+        map canRead ["admin", "consulta", "aluno", "", "professor"] `shouldBe` [True, True, True, False, False]
+        map canReadStaff ["admin", "consulta", "aluno", ""] `shouldBe` [True, True, False, False]
+        map canWrite ["admin", "consulta", "aluno", "", "ADMIN"] `shouldBe` [True, False, False, False, False]
     it "rejeita nomes vazios e matrículas não numéricas" do
         validName "  " `shouldNotBe` Success
         validName "Ana" `shouldBe` Success

@@ -8,7 +8,10 @@ import Data.Char (isAscii, isDigit)
 
 -- Fail closed: unknown roles never acquire permissions.
 canRead :: Text -> Bool
-canRead role = role `elem` ["admin", "consulta"]
+canRead role = role `elem` ["admin", "consulta", "aluno"]
+
+canReadStaff :: Text -> Bool
+canReadStaff role = role `elem` ["admin", "consulta"]
 
 canWrite :: Text -> Bool
 canWrite = (== "admin")

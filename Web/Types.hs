@@ -13,6 +13,7 @@ data RelatoriosController
     = DesempenhoAction { turmaId :: !(Id Turma) }
     | FrequenciaAction { turmaId :: !(Id Turma) }
     | RankingAction
+    | MeuBoletimAction
     deriving (Eq, Show, Data)
 
 instance HasNewSessionUrl User where
@@ -45,6 +46,7 @@ data CursosController
 
 data DashboardController
     = DashboardAction
+    | RegistrarRecuperacaoAction
     deriving (Eq, Show, Data)
 
 data ProfessoresController

@@ -8,7 +8,7 @@ import qualified Application.Domain.Security as Security
 import qualified Data.Text as Text
 
 instance Controller AlunosController where
-    beforeAction = requireRead
+    beforeAction = requireStaff
 
     action AlunosAction = do
         todos <- query @Aluno |> orderBy #nome |> fetch

@@ -145,3 +145,31 @@ main = do
                     _ <- callAction (DeleteProfessorAction (get #id prof))
                     (query @Professore |> filterWhere (#email, "prof.teste@unifor.br") |> fetchCount) >>= (`shouldBe` 0)
                     callAction (ShowProfessorAction def) >>= (\r -> statusCode (responseStatus r) `shouldBe` 404)
+            it "restringe acesso do perfil aluno apenas às suas notas e telas públicas" $ withContext do
+                let alunoUser = newRecord @User |> set #email "alice.silva@aluno.unifor.br" |> set #role_ "aluno"
+                withUser alunoUser do
+                    forEach [WelcomeAction] \a -> callAction a >>= (\r -> statusCode (responseStatus r) `shouldBe` 200)
+                    callAction CursosAction >>= (\r -> statusCode (responseStatus r) `shouldBe` 200)
+                    callAction ProfessoresAction >>= (\r -> statusCode (responseStatus r) `shouldBe` 200)
+                    callAction MeuBoletimAction >>= (\r -> statusCode (responseStatus r) `shouldBe` 200)
+                    callAction DashboardAction >>= (\r -> statusCode (responseStatus r) `shouldBe` 403)
+                    callAction AlunosAction >>= (\r -> statusCode (responseStatus r) `shouldBe` 403)
+                    callAction RankingAction >>= (\r -> statusCode (responseStatus r) `shouldBe` 403)
+                    callAction (DesempenhoAction def) >>= (\r -> statusCode (responseStatus r) `shouldBe` 403)
+                    callAction (FrequenciaAction def) >>= (\r -> statusCode (responseStatus r) `shouldBe` 403)
+            it "permite ao admin registrar recuperação pelo Dashboard e bloqueia consulta" $ withContext do
+                let consultaUser = newRecord @User |> set #role_ "consulta"
+                withUser consultaUser do
+                    callAction RegistrarRecuperacaoAction >>= (\r -> statusCode (responseStatus r) `shouldBe` 403)
+                let adminUser = newRecord @User |> set #role_ "admin"
+                withUser adminUser do
+                    aluno <- query @Aluno |> filterWhere (#matricula, "241004") |> fetchOne
+                    turma <- query @Turma |> fetchOne
+                    r <- callActionWithParams RegistrarRecuperacaoAction
+                        [ ("alunoId", cs (tshow (get #id aluno)))
+                        , ("turmaId", cs (tshow (get #id turma)))
+                        , ("tipo", "nota")
+                        , ("valor", "8.0")
+                        , ("descricao", "Recuperação Teste")
+                        ]
+                    statusCode (responseStatus r) `shouldBe` 302

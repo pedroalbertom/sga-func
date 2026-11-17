@@ -67,7 +67,7 @@ CREATE TABLE users (
     role TEXT DEFAULT 'consulta' NOT NULL,
     locked_at TIMESTAMP WITH TIME ZONE DEFAULT NULL,
     failed_login_attempts INT DEFAULT 0 NOT NULL,
-    CONSTRAINT users_role_valida CHECK (role IN ('admin', 'consulta')),
+    CONSTRAINT users_role_valida CHECK (role IN ('admin', 'consulta', 'aluno')),
     CONSTRAINT users_email_normalizado CHECK (email = lower(btrim(email)) AND regexp_like(email, '^[^[:space:]@]+@[^[:space:]@.]+([.][^[:space:]@.]+)+$'))
 );
 CREATE INDEX alunos_curso_id_index ON alunos (curso_id);

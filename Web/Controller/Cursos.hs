@@ -14,8 +14,7 @@ instance Controller CursosController where
         alunos <- query @Aluno |> fetch
         let cursos = Catalog.buscarCursos busca todos
         let resumo = Catalog.resumoCursos cursos alunos
-        let vinculados = Catalog.estudantesPorCurso cursos alunos
-        render IndexView { cursos, busca, resumo, vinculados }
+        render IndexView { cursos, busca, resumo }
 
     action NewCursoAction = do
         requireWrite

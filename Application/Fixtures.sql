@@ -223,7 +223,8 @@ INSERT INTO frequencias (id, aluno_id, turma_id, data, presente) VALUES
 -- Senha de teste para ambos: senha-de-teste-123
 INSERT INTO users (id, email, password_hash, role) VALUES
     ('0ac8b9cc-e709-4421-b0fd-5c6d60aff2da', 'admin@example.com', 'sha256|17|VCENkp2Hnqc/JH0/etD+mg==|I2xvPEgMIFQjLOL6zyw0Hvtn0MHhF0RSNjh6vJkS5rU=', 'admin'),
-    ('ea1ab0b3-f487-4321-a89b-f8860ab0df9d', 'consulta@example.com', 'sha256|17|OmF9defmU3ql7e6U8n+v7Q==|eajmj4+xgbE3ogUAS9JXpXIGZEsADa/5EyPKi8NriFE=', 'consulta')
+    ('ea1ab0b3-f487-4321-a89b-f8860ab0df9d', 'consulta@example.com', 'sha256|17|OmF9defmU3ql7e6U8n+v7Q==|eajmj4+xgbE3ogUAS9JXpXIGZEsADa/5EyPKi8NriFE=', 'consulta'),
+    ('7a41d8a3-3c9e-4b2a-9c6e-12a34b56c789', 'alice.silva@aluno.unifor.br', 'sha256|17|VCENkp2Hnqc/JH0/etD+mg==|I2xvPEgMIFQjLOL6zyw0Hvtn0MHhF0RSNjh6vJkS5rU=', 'aluno')
 ON CONFLICT DO NOTHING;
 
 -- Documento confidencial de exemplo para Alice Silva (123.456.789-00 cifrado)

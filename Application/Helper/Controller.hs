@@ -11,9 +11,14 @@ requireRead = do
     ensureIsUser
     accessDeniedUnless (Catalog.canRead (get #role_ currentUser))
 
+requireStaff :: (?request :: Request, ?respond :: Respond) => IO ()
+requireStaff = do
+    ensureIsUser
+    accessDeniedUnless (Catalog.canReadStaff (get #role_ currentUser))
+
 requireWrite :: (?request :: Request, ?respond :: Respond) => IO ()
 requireWrite = do
-    requireRead
+    requireStaff
     accessDeniedUnless (Catalog.canWrite (get #role_ currentUser))
 
 findOr404 :: (Table model, FromRowHasql model, Fetchable (Id' table) model, ?request :: Request, ?respond :: Respond, ?modelContext :: ModelContext) => Id' table -> IO model
