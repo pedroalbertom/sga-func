@@ -1,6 +1,7 @@
 module Application.Helper.Controller where
 
 import IHP.ControllerPrelude
+import IHP.Hasql.FromRow (FromRowHasql)
 import Generated.Types
 import Web.Types
 import qualified Application.Domain.Catalog as Catalog
@@ -15,7 +16,7 @@ requireWrite = do
     requireRead
     accessDeniedUnless (Catalog.canWrite (get #role_ currentUser))
 
-findOr404 :: (Fetchable (Id' table) model, ?request :: Request, ?respond :: Respond, ?modelContext :: ModelContext) => Id' table -> IO model
+findOr404 :: (Table model, FromRowHasql model, Fetchable (Id' table) model, ?request :: Request, ?respond :: Respond, ?modelContext :: ModelContext) => Id' table -> IO model
 findOr404 recordId = do
     record <- fetchOneOrNothing recordId
     case record of
