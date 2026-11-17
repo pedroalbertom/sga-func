@@ -99,7 +99,7 @@ main = do
             it "rejeita perfil desconhecido no banco" $ withContext do
                 (newRecord @User |> set #email "x@example.com" |> set #passwordHash "unused" |> set #role_ "superuser" |> createRecord) `shouldThrow` anyException
             it "rejeita vínculo a curso inexistente" $ withContext do
-                (newRecord @Aluno |> set #nome "Ana" |> set #matricula "20260001" |> set #email "ana@example.com" |> set #cursoId (Just (Id "ffffffff-ffff-ffff-ffff-ffffffffffff")) |> createRecord) `shouldThrow` anyException
+                (newRecord @Aluno |> set #nome "Ana" |> set #matricula "20260001" |> set #email "ana@example.com" |> set #cursoId (Just (Id "00000000-0000-0000-0000-000000000999")) |> createRecord) `shouldThrow` anyException
         describe "Sprint 3, 4 e 5: Dashboard, Relatórios, Criptografia e Recuperação" do
             it "exige login no Dashboard e Ranking" $ withContext do
                 r1 <- callAction DashboardAction
@@ -127,3 +127,21 @@ main = do
                         Nothing -> False)
                     _ <- callAction (DeleteAlunoAction (get #id aluno))
                     pure ()
+            it "gerencia CRUD e autorização de Professores" $ withContext do
+                let consultaUser = newRecord @User |> set #role_ "consulta"
+                withUser consultaUser do
+                    callAction ProfessoresAction >>= (\r -> statusCode (responseStatus r) `shouldBe` 200)
+                    forEach [NewProfessorAction, CreateProfessorAction, EditProfessorAction def, UpdateProfessorAction def, DeleteProfessorAction def] \action -> do
+                        callAction action >>= (\r -> statusCode (responseStatus r) `shouldBe` 403)
+                let adminUser = newRecord @User |> set #role_ "admin"
+                withUser adminUser do
+                    rCreate <- callActionWithParams CreateProfessorAction [("nome", "Prof. Teste"), ("email", "prof.teste@unifor.br")]
+                    statusCode (responseStatus rCreate) `shouldBe` 302
+                    prof <- query @Professore |> filterWhere (#email, "prof.teste@unifor.br") |> fetchOne
+                    callAction (ShowProfessorAction (get #id prof)) >>= (\r -> statusCode (responseStatus r) `shouldBe` 200)
+                    rUpdate <- callActionWithParams (UpdateProfessorAction (get #id prof)) [("nome", "Prof. Atualizado"), ("email", "prof.teste@unifor.br")]
+                    statusCode (responseStatus rUpdate) `shouldBe` 302
+                    fetch (get #id prof) >>= (\p -> get #nome p `shouldBe` "Prof. Atualizado")
+                    _ <- callAction (DeleteProfessorAction (get #id prof))
+                    (query @Professore |> filterWhere (#email, "prof.teste@unifor.br") |> fetchCount) >>= (`shouldBe` 0)
+                    callAction (ShowProfessorAction def) >>= (\r -> statusCode (responseStatus r) `shouldBe` 404)

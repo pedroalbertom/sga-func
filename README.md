@@ -44,7 +44,7 @@ O projeto segue a separação **Functional Core / Imperative Shell** (documentad
   * [`Security.hs`](Application/Domain/Security.hs): cifra simétrica em bytes UTF-8 para campos sensíveis, mascaramento e checagem de formato de hash.
   * [`Dashboard.hs`](Application/Domain/Dashboard.hs): agregações de KPIs institucionais, médias por curso e rankings.
   * [`Errors.hs`](Application/Domain/Errors.hs): ADT `AppError` e combinadores de recuperação (`note`, `recoverWith`, `withFallback`, `calcularMediaSegura`, `decifrarOuFallback`).
-* **Camada Web (`Web/`):** controllers (`Alunos`, `Cursos`, `Dashboard`, `Relatorios`, `Sessions`, `Static`), views SSR em HSX e simulador de média no cliente.
+* **Camada Web (`Web/`):** controllers (`Alunos`, `Professores`, `Cursos`, `Dashboard`, `Relatorios`, `Sessions`, `Static`), views SSR em HSX e simulador de média no cliente.
 * **Banco de Dados (`Application/Schema.sql` & `Application/Migration/`):** `alunos`, `cursos`, `professores`, `disciplinas`, `turmas`, `notas`, `frequencias` e `users`, com constraints `CHECK`, `UNIQUE` e `ON DELETE RESTRICT`.
 
 ---

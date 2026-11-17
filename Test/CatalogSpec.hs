@@ -32,6 +32,9 @@ spec = describe "Sprint 2: catálogo e permissões" do
         length (buscarAlunos "unifor.br" [a1,a2]) `shouldBe` 2
         buscarAlunos "inexistente" [a1,a2] `shouldBe` []
         length (buscarCursos "dir" [c1,c2]) `shouldBe` 1
+        let p1 = newRecord @Professore |> set #nome "Carlos" |> set #email "carlos@unifor.br"
+        map (get #nome) (buscarProfessores "CARLOS" [p1]) `shouldBe` ["Carlos"]
+        buscarProfessores "outro" [p1] `shouldBe` []
     it "map e foldr contam vínculos, inclusive cursos vazios" do
         map snd (resumoCursos [c1,c2] [a1,a2]) `shouldBe` [1,0]
         resumoCursos [] [a1,a2] `shouldBe` []

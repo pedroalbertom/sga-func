@@ -11,6 +11,7 @@ import Web.Controller.Cursos
 import Web.Controller.Static
 import Web.Controller.Relatorios
 import Web.Controller.Dashboard
+import Web.Controller.Professores
 
 instance FrontController WebApplication where
     controllers = 
@@ -20,6 +21,7 @@ instance FrontController WebApplication where
         , parseRoute @CursosController
         , parseRoute @RelatoriosController
         , parseRoute @DashboardController
+        , parseRoute @ProfessoresController
         -- Generator Marker
         ]
 

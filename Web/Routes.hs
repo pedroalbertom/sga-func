@@ -13,3 +13,4 @@ instance AutoRoute SessionsController
 instance AutoRoute AlunosController
 instance AutoRoute CursosController
 instance AutoRoute DashboardController
+instance AutoRoute ProfessoresController

@@ -46,3 +46,13 @@ data CursosController
 data DashboardController
     = DashboardAction
     deriving (Eq, Show, Data)
+
+data ProfessoresController
+    = ProfessoresAction
+    | NewProfessorAction
+    | ShowProfessorAction { professorId :: !(Id Professore) }
+    | CreateProfessorAction
+    | EditProfessorAction { professorId :: !(Id Professore) }
+    | UpdateProfessorAction { professorId :: !(Id Professore) }
+    | DeleteProfessorAction { professorId :: !(Id Professore) }
+    deriving (Eq, Show, Data)

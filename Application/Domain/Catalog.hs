@@ -50,6 +50,11 @@ buscarCursos termo = filter (Text.isInfixOf (Text.toCaseFold (Text.strip termo))
   where
     campos curso = get #nome curso <> " " <> get #codigo curso
 
+buscarProfessores :: Text -> [Professore] -> [Professore]
+buscarProfessores termo = filter (Text.isInfixOf (Text.toCaseFold (Text.strip termo)) . Text.toCaseFold . campos)
+  where
+    campos professor = get #nome professor <> " " <> get #email professor
+
 -- map projects each course and foldr reduces its students to a total.
 resumoCursos :: [Curso] -> [Aluno] -> [(Curso, Int)]
 resumoCursos cursos alunos = map (\curso -> (curso, foldr (\_ total -> total + 1) 0 (doCurso curso))) cursos
