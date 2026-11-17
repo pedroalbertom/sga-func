@@ -23,13 +23,13 @@ instance Controller CursosController where
         render FormView { curso }
 
     action ShowCursoAction { cursoId } = do
-        curso <- findCursoOr404 cursoId
+        curso <- findOr404 cursoId
         alunos <- query @Aluno |> filterWhere (#cursoId, Just cursoId) |> orderBy #nome |> fetch
         render ShowView { curso, alunos }
 
     action EditCursoAction { cursoId } = do
         requireWrite
-        curso <- findCursoOr404 cursoId
+        curso <- findOr404 cursoId
         render FormView { curso }
 
     action CreateCursoAction = do
@@ -44,7 +44,7 @@ instance Controller CursosController where
 
     action UpdateCursoAction { cursoId } = do
         requireWrite
-        curso <- findCursoOr404 cursoId >>= buildCurso
+        curso <- findOr404 cursoId >>= buildCurso
         curso |> ifValid \case
             Left curso -> render FormView { curso }
             Right curso -> do
@@ -54,7 +54,7 @@ instance Controller CursosController where
 
     action DeleteCursoAction { cursoId } = do
         requireWrite
-        curso <- findCursoOr404 cursoId
+        curso <- findOr404 cursoId
         alunos <- query @Aluno |> filterWhere (#cursoId, Just cursoId) |> fetchCount
         if alunos > 0
             then setErrorMessage "O curso possui estudantes vinculados. Transfira-os antes de excluir."
@@ -75,10 +75,3 @@ buildCurso curso = do
         |> validateIsUnique #codigo
 
     pure curso
-
-findCursoOr404 :: (?request :: Request, ?respond :: Respond, ?modelContext :: ModelContext) => Id Curso -> IO Curso
-findCursoOr404 cursoId = do
-    record <- fetchOneOrNothing cursoId
-    case record of
-        Nothing -> earlyReturn renderNotFound
-        Just record -> pure record

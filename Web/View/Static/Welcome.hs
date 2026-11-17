@@ -14,12 +14,14 @@ instance View WelcomeView where
                 <span class="badge bg-primary mb-2">UNIFOR • PROGRAMAÇÃO FUNCIONAL 2026</span>
                 <h1 class="display-5 fw-bold">SGA-Func: Gestão Acadêmica</h1>
                 <p class="col-md-9 fs-5 text-muted">
-                    Aplicação prática dos conceitos de Programação Funcional em Haskell:
-                    funções puras, currying, pattern matching, list comprehensions e agregações com map e foldr.
+                    Acompanhamento de turmas, lançamentos de notas, frequência e relatórios de desempenho.
                 </p>
-                <div class="mt-4">
-                    <a class="btn btn-primary btn-lg" href={pathTo RankingAction}>
-                        🏆 Ver Ranking Geral de Alunos
+                <div class="mt-4 d-flex gap-2">
+                    <a class="btn btn-primary btn-lg" href={DashboardAction}>
+                        Abrir Dashboard
+                    </a>
+                    <a class="btn btn-outline-secondary btn-lg" href={pathTo RankingAction}>
+                        Ranking Geral
                     </a>
                 </div>
             </div>
@@ -58,10 +60,10 @@ instance View WelcomeView where
                         </div>
                         <div class="d-flex gap-2">
                             <a class="btn btn-outline-primary btn-sm" href={pathTo (DesempenhoAction (get #id turma))}>
-                                📊 Ver Desempenho
+                                Desempenho
                             </a>
                             <a class="btn btn-outline-success btn-sm" href={pathTo (FrequenciaAction (get #id turma))}>
-                                📅 Ver Frequência
+                                Frequência
                             </a>
                         </div>
                     </div>

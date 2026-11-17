@@ -35,7 +35,7 @@ instance View DesempenhoView where
 
         <div class="card shadow-sm">
             <div class="card-header bg-light">
-                <h5 class="card-title mb-0">Médias dos Alunos (Cálculo com Map &amp; Foldr)</h5>
+                <h5 class="card-title mb-0">Médias dos Alunos</h5>
             </div>
             <div class="table-responsive">
                 <table class="table table-hover align-middle mb-0">

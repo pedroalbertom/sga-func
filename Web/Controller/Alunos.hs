@@ -24,13 +24,13 @@ instance Controller AlunosController where
         render FormView { aluno, cursos }
 
     action ShowAlunoAction { alunoId } = do
-        aluno <- findAlunoOr404 alunoId
+        aluno <- findOr404 alunoId
         curso <- traverse fetch (get #cursoId aluno)
         render ShowView { aluno, curso }
 
     action EditAlunoAction { alunoId } = do
         requireWrite
-        aluno <- findAlunoOr404 alunoId
+        aluno <- findOr404 alunoId
         cursos <- query @Curso |> orderBy #nome |> fetch
         render FormView { aluno, cursos }
 
@@ -48,7 +48,7 @@ instance Controller AlunosController where
     action UpdateAlunoAction { alunoId } = do
         requireWrite
         cursos <- query @Curso |> orderBy #nome |> fetch
-        aluno <- findAlunoOr404 alunoId >>= buildAluno
+        aluno <- findOr404 alunoId >>= buildAluno
         aluno |> ifValid \case
             Left aluno -> render FormView { aluno, cursos }
             Right aluno -> do
@@ -58,7 +58,7 @@ instance Controller AlunosController where
 
     action DeleteAlunoAction { alunoId } = do
         requireWrite
-        aluno <- findAlunoOr404 alunoId
+        aluno <- findOr404 alunoId
         notas <- query @Nota |> filterWhere (#alunoId, alunoId) |> fetchCount
         frequencias <- query @Frequencia |> filterWhere (#alunoId, alunoId) |> fetchCount
         if notas > 0 || frequencias > 0
@@ -90,10 +90,3 @@ buildAluno aluno = do
         Just cursoId -> do
             exists <- query @Curso |> filterWhere (#id, cursoId) |> fetchExists
             pure (if exists then alunoComDoc else attachValidatorResult #cursoId (Failure "Selecione um curso existente.") alunoComDoc)
-
-findAlunoOr404 :: (?request :: Request, ?respond :: Respond, ?modelContext :: ModelContext) => Id Aluno -> IO Aluno
-findAlunoOr404 alunoId = do
-    record <- fetchOneOrNothing alunoId
-    case record of
-        Nothing -> earlyReturn renderNotFound
-        Just record -> pure record

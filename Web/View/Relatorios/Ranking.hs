@@ -20,13 +20,13 @@ instance View RankingView where
         <div class="mb-4">
             <h1 class="h2 mb-1">Ranking Geral de Alunos</h1>
             <p class="text-muted mb-0">
-                Classificação decrescente por média de notas consolidada (Composição funcional: <code>sortBy (comparing (Down . snd)) . calcularDesempenho</code>)
+                Classificação geral por média de notas consolidada.
             </p>
         </div>
 
         <div class="card shadow-sm">
             <div class="card-header bg-light">
-                <h5 class="card-title mb-0">Quadro de Honra &amp; Classificação Geral</h5>
+                <h5 class="card-title mb-0">Classificação Geral</h5>
             </div>
             <div class="table-responsive">
                 <table class="table table-hover align-middle mb-0">
@@ -54,9 +54,9 @@ instance View RankingView where
                     conceito = Academic.conceitoAluno media
                     badgePosicao :: (Text, Text)
                     badgePosicao = case pos of
-                        1 -> ("badge bg-warning text-dark fs-6", "🥇 1º")
-                        2 -> ("badge bg-secondary fs-6", "🥈 2º")
-                        3 -> ("badge bg-info text-dark fs-6", "🥉 3º")
+                        1 -> ("badge bg-warning text-dark fs-6", "1º")
+                        2 -> ("badge bg-secondary fs-6", "2º")
+                        3 -> ("badge bg-info text-dark fs-6", "3º")
                         n -> ("badge bg-light text-dark border", tshow n <> "º")
                 in [hsx|
                     <tr>

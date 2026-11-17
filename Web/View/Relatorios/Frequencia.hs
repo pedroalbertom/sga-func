@@ -28,7 +28,7 @@ instance View FrequenciaView where
 
         <div class="card shadow-sm">
             <div class="card-header bg-light d-flex justify-content-between align-items-center">
-                <h5 class="card-title mb-0">Percentual de Presença por Aluno (Cálculo com Map &amp; Foldr)</h5>
+                <h5 class="card-title mb-0">Percentual de Presença por Aluno</h5>
                 <span class="badge bg-info text-dark">Limite Institucional: 75%</span>
             </div>
             <div class="table-responsive">

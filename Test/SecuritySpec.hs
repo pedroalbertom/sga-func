@@ -16,6 +16,11 @@ spec = describe "Sprint 3: Segurança e Criptografia" do
             let decifrado = descriptografarTexto chaveMestraPadrao cifrado
             decifrado `shouldBe` Right textoOriginal
 
+        it "preserva caracteres UTF-8 acentuados ao cifrar e decifrar" do
+            let textoAcentuado = "João Conceição — RG Nº 42"
+            let cifrado = criptografarTexto chaveMestraPadrao textoAcentuado
+            descriptografarTexto chaveMestraPadrao cifrado `shouldBe` Right textoAcentuado
+
         it "produz ciphertexts diferentes para chaves diferentes" do
             let texto = "CONFIDENCIAL-2026"
             let cifrado1 = criptografarTexto "CHAVE-A" texto

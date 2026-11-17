@@ -1,30 +1,26 @@
 module Application.Domain.Security where
 
 import IHP.Prelude
+import qualified Data.ByteString as BS
 import qualified Data.Text as Text
-import qualified Data.Char as Char
-import Numeric (showHex, readHex)
+import qualified Data.Text.Encoding as TE
 import Data.Bits (xor)
+import Data.Word (Word8)
+import Numeric (readHex, showHex)
 
--- ============================================================================
--- 1. CRIPTOGRAFIA SIMÉTRICA PURA (Keystream Cipher com Hexadecimal)
--- ============================================================================
-
--- Chave mestra padrão da aplicação para cifrar campos confidenciais
 chaveMestraPadrao :: Text
 chaveMestraPadrao = "SGA-FUNC-SECRET-KEY-2026-UNIFOR-FP"
 
--- Gera um keystream infinito baseado na chave
-fluxoChave :: Text -> [Int]
+fluxoChave :: Text -> [Word8]
 fluxoChave chave
     | Text.null chave = cycle [42, 137, 73, 255]
-    | otherwise       = cycle (map Char.ord (Text.unpack chave))
+    | otherwise       = cycle (BS.unpack (TE.encodeUtf8 chave))
 
--- Criptografa um texto claro puro para representação Hexadecimal
+-- Opera em bytes UTF-8 para garantir 2 dígitos hexadecimais por byte mesmo com acentuação.
 criptografarTexto :: Text -> Text -> Text
 criptografarTexto chave textoClaro =
     let stream = fluxoChave chave
-        bytesOriginais = map Char.ord (Text.unpack textoClaro)
+        bytesOriginais = BS.unpack (TE.encodeUtf8 textoClaro)
         bytesCifrados = zipWith xor bytesOriginais stream
         hexChars = concatMap (\b -> pad2 (showHex b "")) bytesCifrados
     in Text.pack hexChars
@@ -32,15 +28,16 @@ criptografarTexto chave textoClaro =
     pad2 [c] = ['0', c]
     pad2 cs  = cs
 
--- Descriptografa um texto em formato Hexadecimal de volta para o texto original
 descriptografarTexto :: Text -> Text -> Either Text Text
 descriptografarTexto chave textoHex = do
     bytesCifrados <- converterHexParaBytes (Text.unpack (Text.strip textoHex))
     let stream = fluxoChave chave
-        bytesOriginais = zipWith xor bytesCifrados stream
-    pure (Text.pack (map Char.chr bytesOriginais))
+        bytesOriginais = BS.pack (zipWith xor bytesCifrados stream)
+    case TE.decodeUtf8' bytesOriginais of
+        Left _    -> Left "Falha ao decodificar UTF-8 após descriptografia."
+        Right txt -> Right txt
   where
-    converterHexParaBytes :: String -> Either Text [Int]
+    converterHexParaBytes :: String -> Either Text [Word8]
     converterHexParaBytes [] = Right []
     converterHexParaBytes (c1:c2:resto) =
         case readHex [c1, c2] of
@@ -48,12 +45,6 @@ descriptografarTexto chave textoHex = do
             _           -> Left "Formato hexadecimal inválido para descriptografia."
     converterHexParaBytes _ = Left "Comprimento ímpar de hexadecimal inválido."
 
-
--- ============================================================================
--- 2. MASCARAMENTO DE DADOS SENSÍVEIS (Para perfis de consulta / não-admin)
--- ============================================================================
-
--- Mascara documentos (ex.: CPF, RG) para exibição segura
 mascararDocumento :: Text -> Text
 mascararDocumento doc
     | Text.length limpo <= 4 = "***"
@@ -64,12 +55,6 @@ mascararDocumento doc
   where
     limpo = Text.strip doc
 
-
--- ============================================================================
--- 3. VERIFICAÇÃO E AUDITORIA DE HASH DE SENHA
--- ============================================================================
-
--- Avalia se o hash armazenado segue o padrão seguro do IHP (sha256|iter|salt|hash)
 formatoHashValido :: Text -> Bool
 formatoHashValido hash =
     case Text.splitOn "|" hash of

@@ -11,7 +11,7 @@ instance Controller RelatoriosController where
     beforeAction = requireRead
 
     action DesempenhoAction { turmaId } = do
-        turma <- fetch turmaId
+        turma <- findOr404 turmaId
         disciplina <- fetch (get #disciplinaId turma)
         notas <- query @Nota
             |> filterWhere (#turmaId, turmaId)
@@ -29,7 +29,7 @@ instance Controller RelatoriosController where
         render DesempenhoView { turma, disciplina, mediasCalculadas, alunoMap, mediaGeral }
 
     action FrequenciaAction { turmaId } = do
-        turma <- fetch turmaId
+        turma <- findOr404 turmaId
         disciplina <- fetch (get #disciplinaId turma)
         frequencias <- query @Frequencia
             |> filterWhere (#turmaId, turmaId)

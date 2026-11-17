@@ -17,8 +17,8 @@ instance View IndexView where
     html IndexView { .. } = [hsx|
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
-                <h1 class="h2 mb-1">📊 Dashboard Acadêmico</h1>
-                <p class="text-muted mb-0">Agregações puras, KPIs em SSR e análise de desempenho.</p>
+                <h1 class="h2 mb-1">Dashboard Acadêmico</h1>
+                <p class="text-muted mb-0">Visão geral de desempenho, frequência e indicadores por curso.</p>
             </div>
             <div>
                 <form method="GET" action={DashboardAction} class="d-flex align-items-center gap-2">
@@ -73,7 +73,7 @@ instance View IndexView where
             <div class="col-lg-6">
                 <div class="card shadow-sm border-0 mb-4">
                     <div class="card-header bg-white fw-bold py-3">
-                        📚 Desempenho Consolidado por Curso
+                        Desempenho por Curso
                     </div>
                     <div class="card-body p-0">
                         <div class="table-responsive">
@@ -94,15 +94,13 @@ instance View IndexView where
                     </div>
                 </div>
 
-                <!-- COMPONENTE REATIVO (Simulador Dinâmico sem reload) -->
                 <div class="card shadow-sm border-0 border-start border-primary border-4">
-                    <div class="card-header bg-white fw-bold py-3 d-flex justify-content-between align-items-center">
-                        <span>⚡ Simulador Reativo de Desempenho</span>
-                        <span class="badge bg-primary">Componente Reativo</span>
+                    <div class="card-header bg-white fw-bold py-3">
+                        Simulador de Média e Situação
                     </div>
                     <div class="card-body">
                         <p class="small text-muted mb-3">
-                            Ajuste as notas e presença abaixo para simular instantaneamente a média ponderada e a situação final calculada no cliente:
+                            Ajuste as notas e a frequência para simular a média ponderada e a situação final:
                         </p>
                         <div class="row g-2 mb-3">
                             <div class="col-4">
@@ -144,8 +142,8 @@ instance View IndexView where
                 <!-- Top Ranking -->
                 <div class="card shadow-sm border-0 mb-4">
                     <div class="card-header bg-white fw-bold py-3 d-flex justify-content-between align-items-center">
-                        <span>🏆 Pódio de Melhores Desempenhos</span>
-                        <a href={RankingAction} class="small text-decoration-none">Ver ranking geral →</a>
+                        <span>Melhores Desempenhos</span>
+                        <a href={RankingAction} class="small text-decoration-none">Ver ranking geral</a>
                     </div>
                     <div class="card-body p-0">
                         <div class="table-responsive">
@@ -169,7 +167,7 @@ instance View IndexView where
                 <!-- Alunos em Risco -->
                 <div class="card shadow-sm border-0">
                     <div class="card-header bg-white fw-bold py-3 text-danger d-flex justify-content-between align-items-center">
-                        <span>⚠️ Alunos que Demandam Atenção</span>
+                        <span>Alunos em Situação de Atenção</span>
                         <span class="badge bg-danger">{length alunosCriticos}</span>
                     </div>
                     <div class="card-body p-0">
@@ -244,9 +242,9 @@ renderLinhaCurso MetricaCurso { .. } = [hsx|
 renderLinhaTop :: (Int, AlunoResumoDashboard) -> Html
 renderLinhaTop (idx, AlunoResumoDashboard { .. }) =
     let posBadge = case idx of
-            0 -> [hsx|<span class="badge bg-warning text-dark">1º 🥇</span>|]
-            1 -> [hsx|<span class="badge bg-secondary text-white">2º 🥈</span>|]
-            2 -> [hsx|<span class="badge bg-danger text-white">3º 🥉</span>|]
+            0 -> [hsx|<span class="badge bg-warning text-dark">1º</span>|]
+            1 -> [hsx|<span class="badge bg-secondary text-white">2º</span>|]
+            2 -> [hsx|<span class="badge bg-danger text-white">3º</span>|]
             _ -> [hsx|<span class="text-muted fw-bold">{idx + 1}º</span>|]
     in [hsx|
         <tr>

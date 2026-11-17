@@ -70,14 +70,14 @@ instance View ShowView where
 
 renderDocumento :: Aluno -> Html
 renderDocumento aluno = case get #documentoCriptografado aluno of
-    Nothing -> [hsx|<span class="text-muted">Não cadastrado</span>|]
+    Nothing -> [hsx|<span class="text-muted">Não informado</span>|]
     Just docHex ->
         if Catalog.canWrite (get #role_ currentUser)
             then case Security.descriptografarTexto Security.chaveMestraPadrao docHex of
-                Right texto -> [hsx|<span><code>{texto}</code> <span class="badge bg-success ms-2">Descriptografado (Admin)</span></span>|]
-                Left _      -> [hsx|<span class="text-danger">Erro de descriptografia</span>|]
+                Right texto -> [hsx|<code>{texto}</code>|]
+                Left _      -> [hsx|<span class="text-danger">Registro inválido</span>|]
             else case Security.descriptografarTexto Security.chaveMestraPadrao docHex of
-                Right texto -> [hsx|<span><code>{Security.mascararDocumento texto}</code> <span class="badge bg-secondary ms-2">Mascarado (Consulta)</span></span>|]
+                Right texto -> [hsx|<span><code>{Security.mascararDocumento texto}</code> <span class="badge bg-secondary ms-2">Restrito</span></span>|]
                 Left _      -> [hsx|<span class="text-muted">***</span>|]
 
 newButton :: Html
@@ -90,9 +90,9 @@ renderForm aluno cursos = formFor aluno [hsx|
             {(textField #email) { fieldLabel = "E-mail", required = True }}
             {(selectField #cursoId cursos) { fieldLabel = "Curso", placeholder = "Sem curso" }}
             <div class="form-group mb-3">
-                <label class="form-label" for="aluno_documento">Documento Confidencial (CPF/RG)</label>
-                <input type="text" name="documento" id="aluno_documento" class="form-control" placeholder="Cifrado com chave simétrica no banco"/>
-                <div class="form-text">Armazenado com criptografia simétrica; visível apenas para administradores.</div>
+                <label class="form-label" for="aluno_documento">Documento (CPF/RG)</label>
+                <input type="text" name="documento" id="aluno_documento" class="form-control" placeholder="Ex.: 123.456.789-00"/>
+                <div class="form-text">Dado protegido no banco. Deixe em branco para manter o atual ao editar.</div>
             </div>
             <button class="btn btn-primary" type="submit">Salvar estudante</button>
             <a class="btn btn-outline-secondary" href={AlunosAction}>Cancelar</a>
