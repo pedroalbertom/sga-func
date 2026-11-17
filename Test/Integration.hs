@@ -100,3 +100,30 @@ main = do
                 (newRecord @User |> set #email "x@example.com" |> set #passwordHash "unused" |> set #role_ "superuser" |> createRecord) `shouldThrow` anyException
             it "rejeita vínculo a curso inexistente" $ withContext do
                 (newRecord @Aluno |> set #nome "Ana" |> set #matricula "20260001" |> set #email "ana@example.com" |> set #cursoId (Just (Id "ffffffff-ffff-ffff-ffff-ffffffffffff")) |> createRecord) `shouldThrow` anyException
+        describe "Sprint 3, 4 e 5: Dashboard, Relatórios, Criptografia e Recuperação" do
+            it "exige login no Dashboard e Ranking" $ withContext do
+                r1 <- callAction DashboardAction
+                statusCode (responseStatus r1) `shouldSatisfy` (`elem` [302, 303])
+                r2 <- callAction RankingAction
+                statusCode (responseStatus r2) `shouldSatisfy` (`elem` [302, 303])
+            it "renderiza Dashboard, Ranking, Desempenho e Frequência e retorna 404 para turma inexistente" $ withContext do
+                let user = newRecord @User |> set #role_ "consulta"
+                withUser user do
+                    callAction DashboardAction >>= (\r -> statusCode (responseStatus r) `shouldBe` 200)
+                    callAction RankingAction >>= (\r -> statusCode (responseStatus r) `shouldBe` 200)
+                    turma <- query @Turma |> fetchOne
+                    callAction (DesempenhoAction (get #id turma)) >>= (\r -> statusCode (responseStatus r) `shouldBe` 200)
+                    callAction (FrequenciaAction (get #id turma)) >>= (\r -> statusCode (responseStatus r) `shouldBe` 200)
+                    callAction (DesempenhoAction def) >>= (\r -> statusCode (responseStatus r) `shouldBe` 404)
+                    callAction (FrequenciaAction def) >>= (\r -> statusCode (responseStatus r) `shouldBe` 404)
+            it "criptografa documento confidencial ao criar estudante" $ withContext do
+                let user = newRecord @User |> set #role_ "admin"
+                withUser user do
+                    r <- callActionWithParams CreateAlunoAction [("nome", "Teste Cripto"), ("matricula", "20268888"), ("email", "cripto@unifor.br"), ("cursoId", ""), ("documento", "111.222.333-44")]
+                    statusCode (responseStatus r) `shouldBe` 302
+                    aluno <- query @Aluno |> filterWhere (#matricula, "20268888") |> fetchOne
+                    get #documentoCriptografado aluno `shouldSatisfy` (\case
+                        Just cifrado -> cifrado /= "111.222.333-44"
+                        Nothing -> False)
+                    _ <- callAction (DeleteAlunoAction (get #id aluno))
+                    pure ()

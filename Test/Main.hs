@@ -7,6 +7,7 @@ import qualified Test.AcademicSpec as AcademicSpec
 import qualified Test.AdvancedSpec as AdvancedSpec
 import qualified Test.SecuritySpec as SecuritySpec
 import qualified Test.DashboardSpec as DashboardSpec
+import qualified Test.ErrorsSpec as ErrorsSpec
 
 main :: IO ()
 main = hspec do
@@ -15,3 +16,4 @@ main = hspec do
     AdvancedSpec.spec
     SecuritySpec.spec
     DashboardSpec.spec
+    ErrorsSpec.spec

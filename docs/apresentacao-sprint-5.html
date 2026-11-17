@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SGA-Func — Sprint 5: Qualidade, Recuperação e Stress</title>
+<style>
+:root{color-scheme:dark;font-family:system-ui,sans-serif;background:#0d1829;color:#f1f5fc}*{box-sizing:border-box}body{margin:0}main{max-width:1100px;margin:auto;padding:7vh 7vw 100px}.slide{display:none;min-height:68vh}.slide.active{display:block}h1{font-size:clamp(2.5rem,7vw,5rem);line-height:1.08;margin:.5em 0}h2{font-size:clamp(2rem,5vw,3.2rem)}p,li,td,th{font-size:clamp(1.1rem,2.5vw,1.55rem);line-height:1.65}li{margin:.5em 0}a{color:#77d8ec}code{color:#94e8d6}small,.eyebrow{color:#a3b7d4}.eyebrow{text-transform:uppercase;letter-spacing:.15em}table{width:100%;border-collapse:collapse}td,th{text-align:left;padding:12px;border-bottom:1px solid #39485e}nav{position:fixed;bottom:0;background:#132035;width:100%;padding:18px;display:flex;gap:20px;justify-content:center;align-items:center}button{background:#65dac6;border:0;border-radius:6px;color:#10212b;padding:10px 20px;font-size:1rem;cursor:pointer}button:disabled{opacity:.35;cursor:default}button:focus-visible,a:focus-visible{outline:3px solid white;outline-offset:4px}@media print{:root{color-scheme:light;background:white;color:black}main{padding:0}.slide{display:block;min-height:95vh;break-after:page}nav{display:none}code,a,.eyebrow,small{color:#233b50}p,li,td,th{font-size:18pt}h1{font-size:48pt}h2{font-size:36pt}}
+</style>
+</head>
+<body>
+<main>
+<section class="slide active" aria-label="Slide 1">
+  <p class="eyebrow">UNIFOR · Programação Funcional</p>
+  <h1>SGA-Func<br>Sprint 5</h1>
+  <p>Qualidade, Tratamento de Erros Monádico, Recuperação, Testes de Integração, Stress Test em Haskell e Entrega Completa.</p>
+  <p><small>Use as setas do teclado (←/→) ou os botões abaixo. Imprima para exportar em PDF.</small></p>
+</section>
+
+<section class="slide" aria-label="Slide 2">
+  <p class="eyebrow">Tratamento de Erros</p>
+  <h2>Erros Monádicos &amp; Recuperação</h2>
+  <ul>
+    <li><strong>ADT <code>AppError</code>:</strong> Modela explicitamente falhas de validação, recurso não encontrado, acesso negado, criptografia e dados vazios.</li>
+    <li><strong>Combinadores de Recuperação:</strong> <code>note</code>, <code>mapError</code>, <code>recoverWith</code> e <code>withFallback</code> em <code>Application/Domain/Errors.hs</code>.</li>
+    <li><strong>Blindagem HTTP:</strong> <code>RelatoriosController</code> trata IDs inválidos retornando <code>404</code> controlado sem exceções.</li>
+  </ul>
+</section>
+
+<section class="slide" aria-label="Slide 3">
+  <p class="eyebrow">Qualidade &amp; Testes</p>
+  <h2>Cobertura Unitária e de Integração</h2>
+  <table>
+    <tr><th>Suíte</th><th>Escopo Coberto</th></tr>
+    <tr><td>Unitários (<code>HSpec</code>)</td><td><code>Academic</code>, <code>Catalog</code>, <code>Advanced</code>, <code>Security</code>, <code>Dashboard</code> e <code>Errors</code>.</td></tr>
+    <tr><td>Integração (<code>Test/Integration.hs</code>)</td><td>Autorização por perfil, CRUD, constraints PostgreSQL, Dashboard, Relatórios, 404 e criptografia.</td></tr>
+  </table>
+  <p><code>nix flake check --impure</code></p>
+</section>
+
+<section class="slide" aria-label="Slide 4">
+  <p class="eyebrow">Performance &amp; Carga</p>
+  <h2>Teste de Stress Nativo em Haskell</h2>
+  <ul>
+    <li><strong>Domínio Puro em Lote:</strong> Processamento de 5.000 alunos e 50.000 notas com avaliação estrita.</li>
+    <li><strong>Concorrência Multi-Thread:</strong> 16 green threads (<code>forkIO</code> + <code>MVar</code>) executando pipelines criptográficos e validação monádica.</li>
+    <li><strong>Stress no PostgreSQL:</strong> Queries concorrentes simultâneas medindo throughput (ops/s), latência média e p95.</li>
+  </ul>
+  <p><small>Código: Application/Script/StressTest.hs</small></p>
+</section>
+
+<section class="slide" aria-label="Slide 5">
+  <p class="eyebrow">Arquitetura &amp; Decisões</p>
+  <h2>Functional Core / Imperative Shell</h2>
+  <ul>
+    <li><strong>Núcleo Puro:</strong> 6 módulos de domínio 100% livres de <code>IO</code>.</li>
+    <li><strong>ADRs Documentados:</strong> Escolha do IHP+HSX, validação dupla (Haskell + PostgreSQL), cifra pura e reatividade.</li>
+    <li><strong>Código Limpo e Tipado:</strong> Tipos explícitos em todas as views HSX e controladores sem warnings.</li>
+  </ul>
+  <p><small>Documentação completa em docs/arquitetura-e-decisoes.md</small></p>
+</section>
+
+<section class="slide" aria-label="Slide 6">
+  <p class="eyebrow">Aplicação Completa</p>
+  <h2>Visão Consolidada (Sprints 0 a 5)</h2>
+  <table>
+    <tr><th>Sprint</th><th>Entrega Principal</th></tr>
+    <tr><td>0 &amp; 1</td><td>Ambiente Nix/IHP, ADTs, Currying, Closures, List Comprehensions e Relatórios.</td></tr>
+    <tr><td>2</td><td>CRUD de Estudantes e Cursos, Roles, Constraints PostgreSQL, <code>map/filter/foldr/concatMap</code>.</td></tr>
+    <tr><td>3</td><td>Monads (<code>Reader</code>, <code>Either</code>), Functors, CPS, Lazy Evaluation e Criptografia Simétrica.</td></tr>
+    <tr><td>4</td><td>Dashboard Analítico SSR em HSX, KPIs, Filtros e Simulador Reativo.</td></tr>
+    <tr><td>5</td><td><code>AppError</code> com recuperação, Testes de Integração completos, Stress Test e ADRs.</td></tr>
+  </table>
+</section>
+
+<section class="slide" aria-label="Slide 7">
+  <p class="eyebrow">Demo Final</p>
+  <h2>Roteiro de Apresentação</h2>
+  <ol>
+    <li>Executar os testes unitários e de integração (<code>nix flake check --impure</code>).</li>
+    <li>Executar o teste de stress em Haskell (<code>StressTest.hs</code>) mostrando throughput e p95.</li>
+    <li>Demonstrar recuperação 404 em <code>/Desempenho?turmaId=...</code> inválido.</li>
+    <li>Percorrer o sistema completo: Login → Dashboard → Estudantes (Cripto) → Cursos → Ranking.</li>
+  </ol>
+  <p><a href="sprint-5-demo.md">Abrir roteiro completo da demo</a></p>
+</section>
+</main>
+
+<nav aria-label="Navegação da apresentação">
+  <button id="previous" type="button">← Anterior</button>
+  <span id="position" aria-live="polite">1 / 7</span>
+  <button id="next" type="button">Próximo →</button>
+</nav>
+
+<script>
+const slides=Array.from(document.querySelectorAll('.slide'));
+const previous=document.getElementById('previous');
+const next=document.getElementById('next');
+let current=0;
+function show(index){current=Math.max(0,Math.min(slides.length-1,index));slides.forEach((slide,i)=>{slide.classList.toggle('active',i===current);slide.setAttribute('aria-hidden',String(i!==current));});previous.disabled=current===0;next.disabled=current===slides.length-1;document.getElementById('position').textContent=`${current+1} / ${slides.length}`;}
+previous.addEventListener('click',()=>show(current-1));next.addEventListener('click',()=>show(current+1));
+document.addEventListener('keydown',event=>{if(event.target.closest('input,textarea'))return;if(['ArrowRight','PageDown',' '].includes(event.key)){event.preventDefault();show(current+1);}if(['ArrowLeft','PageUp'].includes(event.key)){event.preventDefault();show(current-1);}if(event.key==='Home')show(0);if(event.key==='End')show(slides.length-1);});
+show(0);
+</script>
+</body>
+</html>
